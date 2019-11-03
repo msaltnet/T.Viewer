@@ -1,8 +1,13 @@
+notifications:
+  email:
+    on_success: never
+    on_failure: change
+
 language: node_js
 node_js:
   - '10'
 
-  os: windows
+os: windows
 
 branches:
   only:
