@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - '10'
+
+  os: windows
+
+branches:
+  only:
+    - master
+    - /releases\/.+/
+
+install:
+  - npm install
+
+script:
+  - npm run lint && npm run build
