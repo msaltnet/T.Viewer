@@ -9,41 +9,9 @@
 Easy and Simple Tizen Log Viewer 
 
 ## How to Use
+In preparation
 
-## How to build
-T.Viewer use [Electron](https://electronjs.org).
-
-### Pre-acquired
-- nodejs, npm or [yarn](https://yarnpkg.com)
-
-[Electron development environment](https://electronjs.org/docs/tutorial/development-environment)
-
-[Run Electron Application](https://electronjs.org/docs/tutorial/first-app#running-your-app)
-
-### Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-
-## Feature list 
+### Feature list 
 1. log level 별로 출력
    - Info/Debug/Error
 1. tag option 출력 
@@ -54,3 +22,29 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 1. filter 별 탭 제공
    - 하나의 로그를 필터된 탭을 제공
    - 복수개의 필터 탭 제공
+
+## How to build
+T.Viewer use [Electron](https://electronjs.org).
+
+### Pre-acquired
+- nodejs, npm or [yarn](https://yarnpkg.com)
+
+### Project setup
+```
+npm install
+```
+
+### Compiles and lauch electron application
+```
+npm run serve
+```
+
+### Compiles and create executable production
+```
+npm run build
+```
+
+### Lints and run unit test
+```
+npm run test
+```
