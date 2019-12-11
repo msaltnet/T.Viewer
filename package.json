@@ -34,6 +34,7 @@
     "vue-template-compiler": "^2.6.10",
     "vuetify-loader": "^1.3.0"
   },
+  "eslintIgnore": ["/tests/mock/*"],
   "eslintConfig": {
     "root": true,
     "env": {
@@ -43,7 +44,9 @@
       "plugin:vue/essential",
       "eslint:recommended"
     ],
-    "rules": {},
+    "rules": {
+      "no-console": "off"
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     },
