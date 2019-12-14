@@ -18,12 +18,14 @@
 </template>
 
 <script>
-// import LogListener from './LogListener';
+import LogListener from '../LogListener';
+import { ipcRenderer } from 'electron';
 
 export default {
   data: () => ({
       message: 'No Log',
       isListenerOn: true,
+      logListener: new LogListener(ipcRenderer),
   }),
   computed: {
     btnText() {
@@ -32,7 +34,15 @@ export default {
   },
   methods: {
     onStartButton: function () {
-      this.isListenerOn = this.isListenerOn ? false: true;
+      if (this.isListenerOn) {
+        this.isListenerOn = false;
+        this.logListener.registerListener((msg) => {
+          this.message = msg;
+        });
+      } else {
+        this.isListenerOn = true;
+        this.logListener.unregisterListener();
+      }
     }
   }
 };

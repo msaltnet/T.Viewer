@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LogMonitor.vue should have a default content and match snapshot 1`] = `
+<div class="container">
+  <div text-center="" wrap="" class="row"><button type="button" class="v-btn v-btn--block v-btn--contained theme--light v-size--default primary"><span class="v-btn__content">
+      On
+    </span></button>
+    No Log
+  </div>
+</div>
+`;

@@ -10,7 +10,6 @@ import {
 Vue.use(Vuetify);
 
 const localVue = createLocalVue()
-
 describe('LogMonitor.vue', () => {
   let vuetify
 
@@ -26,5 +25,23 @@ describe('LogMonitor.vue', () => {
 
     // With jest we can create snapshot files of the HTML output
     expect(wrapper.html()).toMatchSnapshot()
+  })
+
+  it('should call registerListener', () => {
+    const vm = new Vue(LogMonitor).$mount();
+    vm.isListenerOn = true;
+    vm.logListener.registerListener = jest.fn();
+
+    vm.onStartButton();
+    expect(vm.logListener.registerListener).toBeCalledTimes(1);
+  })
+
+  it('should call unregisterListener', () => {
+    const vm = new Vue(LogMonitor).$mount();
+    vm.isListenerOn = false;
+    vm.logListener.unregisterListener = jest.fn();
+
+    vm.onStartButton();
+    expect(vm.logListener.unregisterListener).toBeCalledTimes(1);
   })
 })
