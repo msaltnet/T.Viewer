@@ -18,6 +18,7 @@ describe('LogListener', () => {
         logListener.registerListener(mockLisnter)
 
         expect(mockIpcRenderer.send).toBeCalledWith(logListener.LISTEN_REQUEST_CHANNEL, logListener.LISTEN_LOG_CHANNEL)
+        expect(mockIpcRenderer.on).toBeCalledWith(logListener.LISTEN_LOG_CHANNEL, logListener._listener)
         expect(logListener.listener).toEqual(mockLisnter)
     })
 
@@ -34,6 +35,7 @@ describe('LogListener', () => {
         logListener.unregisterListener()
 
         expect(mockIpcRenderer.send).toBeCalledWith(logListener.LISTEN_REQUEST_CHANNEL, null)
+        expect(mockIpcRenderer.removeListener).toBeCalledWith(logListener.LISTEN_LOG_CHANNEL, logListener._listener)
         expect(logListener.listener).toEqual(undefined)
     })
 })
