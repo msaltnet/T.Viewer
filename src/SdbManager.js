@@ -1,5 +1,3 @@
-const { webContents } = require('electron')
-
 export default class {
     constructor(spawn) {
         this.isRunning = false;
