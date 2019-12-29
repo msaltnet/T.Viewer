@@ -23,7 +23,7 @@ import { ipcRenderer } from 'electron';
 
 export default {
   data: () => ({
-      message: 'No Log',
+      message: 'No Log Bom',
       isListenerOn: true,
       logListener: new LogListener(ipcRenderer),
   }),
@@ -37,7 +37,7 @@ export default {
       if (this.isListenerOn) {
         this.isListenerOn = false;
         this.logListener.registerListener((msg) => {
-          this.message = msg;
+          this.message += msg;
         });
       } else {
         this.isListenerOn = true;

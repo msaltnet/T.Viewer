@@ -43,4 +43,14 @@ export default class {
             sender.send(value.channel, response);
         }
     }
+
+    sendLogMessage(data) {
+        for (var value of this.listenerMap.values()) {
+            let sender = webContents.fromId(value.id);
+            if (!sender) {
+                continue;
+            }
+            sender.send(value.channel, data);
+        }
+    }
 }
