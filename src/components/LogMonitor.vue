@@ -22,6 +22,7 @@ import LogListener from '../LogListener';
 import { ipcRenderer } from 'electron';
 
 export default {
+  props: ['listenSwitch'],
   data: () => ({
       message: 'No Log Bom',
       isListenerOn: true,
@@ -34,15 +35,17 @@ export default {
   },
   methods: {
     onStartButton: function () {
-      if (this.isListenerOn) {
-        this.isListenerOn = false;
-        this.logListener.registerListener((msg) => {
-          this.message += msg;
-        });
-      } else {
-        this.isListenerOn = true;
-        this.logListener.unregisterListener();
-      }
+      console.log(this.listenSwitch);
+      return;
+      // if (this.isListenerOn) {
+      //   this.isListenerOn = false;
+      //   this.logListener.registerListener((msg) => {
+      //     this.message += msg;
+      //   });
+      // } else {
+      //   this.isListenerOn = true;
+      //   this.logListener.unregisterListener();
+      // }
     }
   }
 };
