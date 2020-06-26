@@ -39,6 +39,24 @@
           <v-tab
             :href="'#tab-2'"
           >ft.2</v-tab>
+          <v-tab
+            :href="'#tab-3'"
+          >ft.3</v-tab>
+          <v-tab
+            :href="'#tab-4'"
+          >ft.4</v-tab>
+          <v-tab
+            :href="'#tab-5'"
+          >ft.5</v-tab>
+          <v-tab
+            :href="'#tab-6'"
+          >ft.6</v-tab>
+          <v-tab
+            :href="'#tab-7'"
+          >ft.7</v-tab>
+          <v-tab
+            :href="'#tab-8'"
+          >ft.8</v-tab>
         </v-tabs>
       </template>
     </v-app-bar>
@@ -52,17 +70,89 @@
           MAIN TAB
           <LogMonitor
             v-bind:listenSwitch="switchListen"
+            listenerId="listener-0"
+            filter=""
           />
         </v-tab-item>
         <v-tab-item
           :value="'tab-1'"
         >
-          TAB-1
-          </v-tab-item>
+          TAB-1 filter="W_HOME"
+          <LogMonitor
+            v-bind:listenSwitch="switchListen"
+            listener-id="listener-1"
+            filter="W_HOME"
+          />
+        </v-tab-item>
         <v-tab-item
           :value="'tab-2'"
         >
-          TAB-2
+          TAB-2 filter="CAPI"
+          <LogMonitor
+            v-bind:listenSwitch="switchListen"
+            listener-id="listener-2"
+            filter="CAPI"
+          />
+        </v-tab-item>
+        <v-tab-item
+          :value="'tab-3'"
+        >
+          TAB-3 filter="watchface"
+          <LogMonitor
+            v-bind:listenSwitch="switchListen"
+            listener-id="listener-3"
+            filter="watchface"
+          />
+        </v-tab-item>
+        <v-tab-item
+          :value="'tab-4'"
+        >
+          TAB-4 filter="watch_app_main"
+          <LogMonitor
+            v-bind:listenSwitch="switchListen"
+            listener-id="listener-4"
+            filter="watch_app_main"
+          />
+        </v-tab-item>
+        <v-tab-item
+          :value="'tab-5'"
+        >
+          TAB-5 filter="MANAGER"
+          <LogMonitor
+            v-bind:listenSwitch="switchListen"
+            listener-id="listener-5"
+            filter="MANAGER"
+          />
+        </v-tab-item>
+        <v-tab-item
+          :value="'tab-6'"
+        >
+          TAB-6 filter="CORE"
+          <LogMonitor
+            v-bind:listenSwitch="switchListen"
+            listener-id="listener-6"
+            filter="CORE"
+          />
+        </v-tab-item>
+        <v-tab-item
+          :value="'tab-7'"
+        >
+          TAB-7 filter="SOUND"
+          <LogMonitor
+            v-bind:listenSwitch="switchListen"
+            listener-id="listener-7"
+            filter="SOUND"
+          />
+        </v-tab-item>
+        <v-tab-item
+          :value="'tab-8'"
+        >
+          TAB-8 filter="samsung"
+          <LogMonitor
+            v-bind:listenSwitch="switchListen"
+            listener-id="listener-8"
+            filter="samsung"
+          />
         </v-tab-item>
       </v-tabs-items>
 

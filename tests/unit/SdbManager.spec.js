@@ -57,7 +57,7 @@ describe('SdbManager', () => {
 
         const sdbManager = new SdbManager(mockSpawn);
         sdbManager.startDlog();
-        expect(mockOn).toBeCalledWith(sdbManager.const.LISTEN_EVENT, sdbManager.onStdout);
+        expect(mockOn).toBeCalledWith(sdbManager.const.LISTEN_EVENT, expect.any(Function));
     })
 
     it('should set error callback to spawn stderr when startDlog called', () => {
@@ -74,7 +74,7 @@ describe('SdbManager', () => {
 
         const sdbManager = new SdbManager(mockSpawn);
         sdbManager.startDlog();
-        expect(mockOn).toBeCalledWith(sdbManager.const.LISTEN_EVENT, sdbManager.onErrorEvent);
+        expect(mockOn).toBeCalledWith(sdbManager.const.LISTEN_EVENT, expect.any(Function));
     })
 
     it('should set close callback to spawn close event when startDlog called', () => {
@@ -91,7 +91,7 @@ describe('SdbManager', () => {
 
         const sdbManager = new SdbManager(mockSpawn);
         sdbManager.startDlog();
-        expect(mockOn).toBeCalledWith(sdbManager.const.CLOSE_EVENT, sdbManager.onTerminatedEvent);
+        expect(mockOn).toBeCalledWith(sdbManager.const.CLOSE_EVENT, expect.any(Function));
     })
 
     it('should call registered listener callback when onStdout called', () => {
@@ -135,8 +135,6 @@ describe('SdbManager', () => {
         sdbManager.startDlog();
         expect(sdbManager.isRunning).toBe(true);
 
-        sdbManager.stopDlog();
-        sdbManager.stopDlog();
         sdbManager.stopDlog();
         expect(mockKill).toBeCalledTimes(1);
         expect(sdbManager.isRunning).toBe(false);

@@ -3,13 +3,11 @@ export default class {
         this.ipcRenderer = ipcRenderer;
         this.LISTEN_REQUEST_CHANNEL = "register-listener";
         this.LISTEN_LOG_CHANNEL = "log-listen";
-        // this.textDecoder = new TextDecoder("utf-8");
+        this.textDecoder = new TextDecoder("utf-8");
         this.listener;
         this._listener = (event, arg) => {
-            console.log(arg);
             if (this.listener)
-                this.listener(arg);
-            // this.listener(this.textDecoder.decode(arg[0]));
+                this.listener(this.textDecoder.decode(arg[0]));
         };
     }
 

@@ -1,4 +1,4 @@
-const { webContents } = require('electron')
+import { webContents } from 'electron';
 
 export default class {
     constructor (ipcMain) {

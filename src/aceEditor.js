@@ -1,4 +1,4 @@
-var Utils = require("./utils");
+import Utils from './utils';
 const ace = require("ace-builds/src-noconflict/ace.js");
 require("ace-builds/src-noconflict/ext-searchbox.js");
 

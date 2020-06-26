@@ -18,6 +18,16 @@ module.exports = {
             },
           ],
         },
+        linux: {
+          target: [
+            {
+              target: 'AppImage',
+              arch: [
+                'x64',
+              ],
+            },
+          ],
+        },
       },
     },
   },
