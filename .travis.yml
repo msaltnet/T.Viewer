@@ -28,4 +28,5 @@ deploy:
     - "dist/*.exe"
   on:
     repo: msaltnet/T.Viewer
+    tags: true
   skip_cleanup: 'true'
