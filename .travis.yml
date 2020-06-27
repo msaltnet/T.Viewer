@@ -12,13 +12,6 @@ install:
   - npm install
 script:
   - npm run test && npm run build
-  - |
-    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      npm run dist:linux
-    fi
-    if [ "$TRAVIS_OS_NAME" == "windows" ]; then
-      npm run dist:win
-    fi
 deploy:
   provider: releases
   api_key:
