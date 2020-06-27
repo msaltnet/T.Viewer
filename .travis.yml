@@ -16,6 +16,7 @@ deploy:
   provider: releases
   api_key:
     secure: P/9QttAI1XiZN0opykHKI+Gxz/QB46/mGguvoIW571Crqb3RCHiRt1wkKNyTNcx1ychWH81XpY7Z1R5Gtioy/fGeyoWYmfoRXBHvkq9N3d0yl2rCLCJV/xlBLmmK4mfFwvgd/zQqkCakXVvr+MOvLnopEl+YAQEfFN0JRc3V05sZzyadncazVf3T2n+NoiONw2z+i4gV+PzD6SfvotMrUGDrjoiqnkneRF71ubw0Hl+cJml5JQXZFgZIOcn2N2VLWIZbyt9CeBu7pFeAET2OZitTnXo/Wq5tewWEPglM97CJJpkFLdkrWeEaXrDMXYEdGJJE4XgA9nY80nRZu2C5SlKCkVQJp6Qyv4uLIiuQ3X0kw3nXubOlmSM5dZpFwKh/Co9mwt+8whsKLWRI+/BkmPBzGLBS0HARyiic5HS7esVb/58Z1EkitlJK1ijH+DX2spmjW71mO7gAiUeElAAOu37uIGH3ukE7mhOwW3A/XygklEwMpcyUT1rOwSg3Eql0yiFVanMaixrglsQwO21AyM4zoHW1RgjQ2QNS8SY9P0aMIFDEI9s7EGrgxDc/8B5Wfn/3oRbnM+f35gwXsZuoGEKa/RR6qf3fTisrsYF2X8l6TZ5dYbmt026c91D3gqjUIGX7oIaD9WcEQ2zlpINpru2WNwhoOv2wc4jxydVlmY8=
+  file_glob: true
   file:
     - "dist_electron/*.AppImage"
     - "dist_electron/*.exe"
