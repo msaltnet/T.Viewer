@@ -82,7 +82,6 @@ app.on('ready', async () => {
     // logService.startTestMessage();
     let sdbManager = new SdbManager(spawn);
     sdbManager.registerListener((data)=>{
-        console.log('===============================================');
         logService.sendLogMessage(data);
     });
     sdbManager.startDlog();

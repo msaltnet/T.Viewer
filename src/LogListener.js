@@ -7,7 +7,7 @@ export default class {
         this.listener;
         this._listener = (event, arg) => {
             if (this.listener)
-                this.listener(this.textDecoder.decode(arg[0]));
+                this.listener(this.textDecoder.decode(arg));
         };
     }
 
