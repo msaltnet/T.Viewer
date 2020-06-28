@@ -3,7 +3,7 @@ export default class {
         this.isRunning = false;
         this.const = {
             MAIN_COMMAND : 'sdb',
-            SDB_DLOG_COMMAND: 'dlog',
+            SDB_DLOG_COMMAND: ['dlog', '-v', 'time'],
             LISTEN_EVENT: 'data',
             CLOSE_EVENT: 'close',
         };
@@ -36,7 +36,7 @@ export default class {
         if (this.isRunning)
             return;
         console.log('Dlog Start!');
-        this.sdb = this.spawn(this.const.MAIN_COMMAND, [this.const.SDB_DLOG_COMMAND], this.spawnOption);
+        this.sdb = this.spawn(this.const.MAIN_COMMAND, this.const.SDB_DLOG_COMMAND, this.spawnOption);
         this.isRunning = true;
 
         this.sdb.stdout.on(this.const.LISTEN_EVENT, this.onStdout.bind(this));
