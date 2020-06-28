@@ -5,7 +5,6 @@ import { ipcRenderer } from 'electron';
 
 // Utilities
 import {
-  mount,
   shallowMount
 } from '@vue/test-utils'
 Vue.use(Vuetify);
