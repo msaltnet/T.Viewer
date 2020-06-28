@@ -20,7 +20,7 @@ describe('SdbManager', () => {
         sdbManager.startDlog();
         expect(sdbManager.isRunning).toBe(true);
         expect(mockSpawn).toBeCalledWith(sdbManager.const.MAIN_COMMAND,
-            [sdbManager.const.SDB_DLOG_COMMAND],
+            sdbManager.const.SDB_DLOG_COMMAND,
             sdbManager.spawnOption);
     })
     
@@ -39,7 +39,7 @@ describe('SdbManager', () => {
         sdbManager.isRunning = true;
         sdbManager.startDlog();
         expect(mockSpawn).not.toBeCalledWith(sdbManager.const.MAIN_COMMAND,
-            [sdbManager.const.SDB_DLOG_COMMAND],
+            sdbManager.const.SDB_DLOG_COMMAND,
             sdbManager.spawnOption);
     })
 
@@ -139,4 +139,5 @@ describe('SdbManager', () => {
         expect(mockKill).toBeCalledTimes(1);
         expect(sdbManager.isRunning).toBe(false);
     })
+
 })
