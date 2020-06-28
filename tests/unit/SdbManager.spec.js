@@ -94,6 +94,42 @@ describe('SdbManager', () => {
         expect(mockOn).toBeCalledWith(sdbManager.const.CLOSE_EVENT, expect.any(Function));
     })
 
+    it('should call spawn with correct argument when clearDlog called', () => {
+        const mockSpawn = jest.fn().mockReturnValue({
+            stdout: {
+                on: jest.fn()
+            },
+            stderr: {
+                on: jest.fn()
+            },
+            on: jest.fn()
+        });
+
+        const sdbManager = new SdbManager(mockSpawn);
+
+        sdbManager.clearDlog();
+        expect(mockSpawn).toBeCalledWith(sdbManager.const.MAIN_COMMAND,
+            sdbManager.const.SDB_DLOG_CLEAR_COMMAND,
+            sdbManager.spawnOption);
+    })
+
+    it('should set close callback to spawn close event when clearDlog called', () => {
+        const mockOn = jest.fn();
+        const mockSpawn = jest.fn().mockReturnValue({
+            stdout: {
+                on: jest.fn()
+            },
+            stderr: {
+                on: jest.fn()
+            },
+            on: mockOn
+        });
+
+        const sdbManager = new SdbManager(mockSpawn);
+        sdbManager.clearDlog();
+        expect(mockOn).toBeCalledWith(sdbManager.const.CLOSE_EVENT, expect.any(Function));
+    })
+
     it('should call registered listener callback when onStdout called', () => {
         const mockListener = jest.fn();
         const sdbManager = new SdbManager();

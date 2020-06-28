@@ -4,6 +4,7 @@ export default class {
         this.const = {
             MAIN_COMMAND : 'sdb',
             SDB_DLOG_COMMAND: ['dlog', '-v', 'time'],
+            SDB_DLOG_CLEAR_COMMAND: ['dlog', '-c'],
             LISTEN_EVENT: 'data',
             CLOSE_EVENT: 'close',
         };
@@ -41,6 +42,12 @@ export default class {
 
         this.sdb.stdout.on(this.const.LISTEN_EVENT, this.onStdout.bind(this));
         this.sdb.stderr.on(this.const.LISTEN_EVENT, this.onErrorEvent.bind(this));
+        this.sdb.on(this.const.CLOSE_EVENT, this.onTerminatedEvent.bind(this));
+    }
+
+    clearDlog(){
+        console.log('Dlog Clear!');
+        this.sdb = this.spawn(this.const.MAIN_COMMAND, this.const.SDB_DLOG_CLEAR_COMMAND, this.spawnOption);
         this.sdb.on(this.const.CLOSE_EVENT, this.onTerminatedEvent.bind(this));
     }
 
