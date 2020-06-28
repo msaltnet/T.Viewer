@@ -20,6 +20,7 @@
         dense
         hide-details
         v-model="switchListen"
+        v-on:change="onSwitchChange"
         class="mx-1"
         :label="`Listen: ${switchListen?'On':'Off'}`"
       ></v-switch>
@@ -162,6 +163,8 @@
 
 <script>
 import LogMonitor from './components/LogMonitor';
+import { ipcRenderer } from 'electron';
+const POWER_EVENT_CHANNEL = "change-power";
 
 export default {
   name: 'App',
@@ -172,5 +175,14 @@ export default {
     currentItem: 'tab-main',
     switchListen: false
   }),
+  methods: {
+    onSwitchChange: function () {
+      let command = '';
+      if (this.switchListen)
+        command = 'start';
+
+      ipcRenderer.send(POWER_EVENT_CHANNEL, command);
+    }
+  }
 };
 </script>
