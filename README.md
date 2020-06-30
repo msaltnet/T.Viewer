@@ -12,16 +12,16 @@ Easy and Simple Tizen Log Viewer
 In preparation
 
 ### Feature list 
-1. log level 별로 출력
+1. Log Level Filter
    - Info/Debug/Error
-1. tag option 출력 
-   - multi tag 출력 지원
-1. filter 적용한 출력 
-   - grep으로 원하는 로그만 출력(dlogutil grep &quot;A|B&quot;)
-   - grep으로 특정 메시지를 제외한 로그만 출력(dlogutil grep -Ev &quot;A|B&quot;)
-1. filter 별 탭 제공
-   - 하나의 로그를 필터된 탭을 제공
-   - 복수개의 필터 탭 제공
+1. Tag Filter
+   - Matching tag
+1. Message Filter
+   - Matching message
+1. Multi-Tab View
+   - Independent filter option for each tab
+1. Re-filtering Option
+   - New filtered tab from exist one
 
 ## How to build
 T.Viewer use [Electron](https://electronjs.org).
