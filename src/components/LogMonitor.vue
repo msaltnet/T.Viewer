@@ -36,7 +36,7 @@ export default {
     }
   },
   created: function() {
-    this.logListener = new LogListener(ipcRenderer, this.listenerId);
+    this.logListener = new LogListener(ipcRenderer);
     AceEditor.init(this.globalSettings);
   },
   mounted: function() {
@@ -47,33 +47,35 @@ export default {
       console.log(this.listenerId);
       if (this.isListenerOn) {
         this.isListenerOn = false;
-        this.logListener.registerListener((msg) => {
-          let contents = msg.split('\r\n');
-          contents.map(line => {
-            let show = false;
-
-            if (line.indexOf(this.filter) != -1) {
-              show = true;
-            }
-
-            return {
-              show: show,
-              line: line
-            };
-          })
-          .filter(line => line.show)
-          .map(line => {
-            this.viewer.navigateLineEnd();
-            this.viewer.insert(line.line);
-            return line;
-          });
-
-          this.viewer.scrollToLine(this.viewer.session.getLength());
-        });
+        this.listenerTag = this.logListener.registerListener(this.onMessageReceived);
+        console.log(this.listenerTag);
       } else {
         this.isListenerOn = true;
-        this.logListener.unregisterListener();
+        this.logListener.unregisterListener(this.listenerTag);
       }
+    },
+    onMessageReceived: function (msg) {
+      let contents = msg.split('\r\n');
+      contents.map(line => {
+        let show = false;
+
+        if (line.indexOf(this.filter) != -1) {
+          show = true;
+        }
+
+        return {
+          show: show,
+          line: line
+        };
+      })
+      .filter(line => line.show)
+      .map(line => {
+        this.viewer.navigateLineEnd();
+        this.viewer.insert(line.line);
+        return line;
+      });
+
+      this.viewer.scrollToLine(this.viewer.session.getLength());
     }
   }
 }
