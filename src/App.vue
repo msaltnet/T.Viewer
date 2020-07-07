@@ -9,10 +9,6 @@
       <v-spacer></v-spacer>
 
       <v-btn icon class="mx-1">
-        <v-icon>mdi-filter</v-icon>
-      </v-btn>
-
-      <v-btn icon class="mx-1">
         <v-icon>mdi-settings</v-icon>
       </v-btn>
 
@@ -22,53 +18,48 @@
         v-model="switchListen"
         v-on:change="onSwitchChange"
         class="mx-1"
-        :label="`Listen: ${switchListen?'On':'Off'}`"
+        :label="'Power'"
       ></v-switch>
-
-      <template v-slot:extension>
-        <v-tabs
-          align-with-title
-          v-model="currentItem"
-          background-color="transparent"
-        >
-          <v-tab
-            :href="'#tab-main'"
-          >main</v-tab>
-          <v-tab
-            :href="'#tab-1'"
-          >ft.1</v-tab>
-          <v-tab
-            :href="'#tab-2'"
-          >ft.2</v-tab>
-          <v-tab
-            :href="'#tab-3'"
-          >ft.3</v-tab>
-          <v-tab
-            :href="'#tab-4'"
-          >ft.4</v-tab>
-          <v-tab
-            :href="'#tab-5'"
-          >ft.5</v-tab>
-          <v-tab
-            :href="'#tab-6'"
-          >ft.6</v-tab>
-          <v-tab
-            :href="'#tab-7'"
-          >ft.7</v-tab>
-          <v-tab
-            :href="'#tab-8'"
-          >ft.8</v-tab>
-        </v-tabs>
-      </template>
     </v-app-bar>
 
     <v-content>
+      <v-tabs
+        align-with-title
+        v-model="currentItem"
+        background-color="transparent"
+      >
+        <v-tab
+          :href="'#tab-main'"
+        >Main</v-tab>
+        <v-tab
+          :href="'#tab-1'"
+        >ft.1</v-tab>
+        <v-tab
+          :href="'#tab-2'"
+        >ft.2</v-tab>
+        <v-tab
+          :href="'#tab-3'"
+        >ft.3</v-tab>
+        <v-tab
+          :href="'#tab-4'"
+        >ft.4</v-tab>
+        <v-tab
+          :href="'#tab-5'"
+        >ft.5</v-tab>
+        <v-tab
+          :href="'#tab-6'"
+        >ft.6</v-tab>
+        <v-tab
+          :href="'#tab-7'"
+        >ft.7</v-tab>
+        <v-tab
+          :href="'#tab-8'"
+        >ft.8</v-tab>
+      </v-tabs>
 
       <v-tabs-items v-model="currentItem">
         <v-tab-item
-          :value="'tab-main'"
-        >
-          MAIN TAB
+          :value="'tab-main'">
           <LogMonitor
             v-bind:listenSwitch="switchListen"
             listenerId="listener-0"

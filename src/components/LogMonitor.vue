@@ -1,21 +1,32 @@
 <template>
-  <v-container>
-    <v-row
-      text-center
-      wrap
-    >
-      <v-btn
-        v-bind:outlined="!isListenerOn"
-        block
-        color="primary"
-        v-on:click="onStartButton"
-        >
-        {{ btnText }}
+  <div>
+    <v-toolbar color="grey lighten-5 elevation-0" :height="toolbarHeight">
+      <v-btn icon class="mx-1">
+        <v-icon>mdi-filter</v-icon>
       </v-btn>
-      {{ message }}
-      <div ref="viewer" :style="{'height': '500px', 'width': '100%'}"></div>
-    </v-row>
-  </v-container>
+
+      <v-divider class="mx-3" inset vertical></v-divider>
+
+      <v-spacer></v-spacer>
+
+      <v-divider class="mx-3" inset vertical></v-divider>
+
+      <v-btn icon class="mx-1">
+        <v-icon>mdi-settings</v-icon>
+      </v-btn>
+
+      <v-switch
+        dense
+        hide-details
+        v-model="isListenerOn"
+        v-on:change="onSwitchChanged"
+        class="mx-1"
+        :label="'Listen'"
+      ></v-switch>
+    </v-toolbar>
+
+    <div ref="viewer" :style="{'height': editorHeight + 'px'}"></div>
+  </div>
 </template>
 
 <script>
@@ -25,11 +36,14 @@ import GlobalSettings from '../globalSettings';
 import { ipcRenderer } from 'electron';
 export default {
   props: ['listenSwitch', 'listenerId', 'filter'],
-  data: () => ({
-      message: 'No Log Bom',
-      isListenerOn: true,
-      globalSettings: new GlobalSettings()
-  }),
+  data: function () {
+    return {
+      toolbarHeight: 40,
+      isListenerOn: false,
+      globalSettings: new GlobalSettings(),
+      editorHeight: this.getEditorHeight(),
+    }
+  },
   computed: {
     btnText() {
       return this.isListenerOn ? 'On' : 'Off';
@@ -43,14 +57,11 @@ export default {
     this.viewer = AceEditor.createViewer(this.$refs.viewer, this.globalSettings);
   },
   methods: {
-    onStartButton: function () {
-      console.log(this.listenerId);
+    onSwitchChanged: function () {
       if (this.isListenerOn) {
-        this.isListenerOn = false;
         this.listenerTag = this.logListener.registerListener(this.onMessageReceived);
         console.log(this.listenerTag);
       } else {
-        this.isListenerOn = true;
         this.logListener.unregisterListener(this.listenerTag);
       }
     },
@@ -76,7 +87,11 @@ export default {
       });
 
       this.viewer.scrollToLine(this.viewer.session.getLength());
-    }
+    },
+    getEditorHeight() {
+      console.log(window.innerHeight - 56 - 88);
+      return window.innerHeight - 56 - 88;
+    },
   }
 }
 </script>
