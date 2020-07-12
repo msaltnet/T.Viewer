@@ -50,9 +50,6 @@ export default {
     }
   },
   computed: {
-    btnText() {
-      return this.isListenerOn ? 'On' : 'Off';
-    }
   },
   created: function() {
     this.logListener = new LogListener(ipcRenderer);
