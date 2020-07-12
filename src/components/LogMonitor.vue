@@ -62,30 +62,35 @@ export default {
     onSwitchChanged: function () {
       if (this.isListenerOn) {
         this.listenerTag = this.logListener.registerListener(this.onMessageReceived);
-        console.log(this.listenerTag);
+        // console.log(this.listenerTag);
       } else {
         this.logListener.unregisterListener(this.listenerTag);
       }
     },
     onMessageReceived: function (msg) {
-      let contents = msg.split('\r\n');
-      contents.map(line => {
-        return {
-          show: this.filterLogLevel(line),
-          line: line
-        };
-      })
-      .filter(line => line.show)
-      .map(line => {
-        this.viewer.navigateLineEnd();
-        this.viewer.insert(line.line);
-        return line;
-      });
+      try {
+        let contents = msg.split('\r\n');
 
-      this.viewer.scrollToLine(this.viewer.session.getLength());
+        contents.map(line => {
+          return {
+            show: this.filterLogLevel(line),
+            line: line
+          };
+        })
+        .filter(line => line.show)
+        .map(line => {
+          this.viewer.navigateLineEnd();
+          this.viewer.insert(line.line);
+          return line;
+        });
+
+        this.viewer.scrollToLine(this.viewer.session.getLength());
+      } catch {
+        console.log("Invaild log text is received!");
+      }
     },
     getEditorHeight: function () {
-      console.log(window.innerHeight - 56 - 88);
+      // console.log(window.innerHeight - 56 - 88);
       return window.innerHeight - 56 - 88;
     },
     // 07-10 14:51:21.337+0900 I/RESOURCED( 2617): heart-battery.c:....
