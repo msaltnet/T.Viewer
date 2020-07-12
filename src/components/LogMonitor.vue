@@ -6,13 +6,15 @@
       </v-btn>
 
       <v-divider class="mx-3" inset vertical></v-divider>
-
+      <v-flex xs4>
+          <v-select dense v-model="logLevelsSelected" :items="logLevels"></v-select>
+      </v-flex>
       <v-spacer></v-spacer>
 
       <v-divider class="mx-3" inset vertical></v-divider>
 
       <v-btn icon class="mx-1">
-        <v-icon>mdi-settings</v-icon>
+        <v-icon>mdi-cog</v-icon>
       </v-btn>
 
       <v-switch
@@ -40,6 +42,9 @@ export default {
     return {
       toolbarHeight: 40,
       isListenerOn: false,
+      logLevels: ["Verbose", "Debug", "Info", "Warning", "Error", "Fatal"],
+      logLevelChars: ["V", "D", "I", "W", "E", "F"],
+      logLevelsSelected: "Verbose", //TO DO load from settings
       globalSettings: new GlobalSettings(),
       editorHeight: this.getEditorHeight(),
     }
@@ -68,14 +73,8 @@ export default {
     onMessageReceived: function (msg) {
       let contents = msg.split('\r\n');
       contents.map(line => {
-        let show = false;
-
-        if (line.indexOf(this.filter) != -1) {
-          show = true;
-        }
-
         return {
-          show: show,
+          show: this.filterLogLevel(line),
           line: line
         };
       })
@@ -88,10 +87,31 @@ export default {
 
       this.viewer.scrollToLine(this.viewer.session.getLength());
     },
-    getEditorHeight() {
+    getEditorHeight: function () {
       console.log(window.innerHeight - 56 - 88);
       return window.innerHeight - 56 - 88;
     },
+    // 07-10 14:51:21.337+0900 I/RESOURCED( 2617): heart-battery.c:....
+    filterLogLevel: function (line) {
+      const LOG_LEVEL_CHAR_START_POSITION = 24;
+      let logLevelIndex = this.logLevels.indexOf(this.logLevelsSelected);
+      let logChar = line.substr(LOG_LEVEL_CHAR_START_POSITION,1);
+
+      if (logLevelIndex == 0 || this.logLevelChars[5] == logChar)
+        return true;
+
+      if (this.logLevelChars[4] == logChar) {
+        return logLevelIndex <= 4;
+      } else if (this.logLevelChars[3] == logChar) {
+        return logLevelIndex <= 3;
+      } else if (this.logLevelChars[2] == logChar) {
+        return logLevelIndex <= 2;
+      } else if (this.logLevelChars[1] == logChar) {
+        return logLevelIndex <= 1;
+      } else {
+        return logLevelIndex == 0;
+      }
+    }
   }
 }
 </script>
