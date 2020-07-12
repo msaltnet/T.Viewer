@@ -57,6 +57,7 @@ export default {
   },
   mounted: function() {
     this.viewer = AceEditor.createViewer(this.$refs.viewer, this.globalSettings);
+    window.addEventListener('resize', this.handleResize);
   },
   methods: {
     onSwitchChanged: function () {
@@ -88,6 +89,9 @@ export default {
       } catch {
         console.log("Invaild log text is received!");
       }
+    },
+    handleResize() {
+      this.editorHeight = this.getEditorHeight();
     },
     getEditorHeight: function () {
       // console.log(window.innerHeight - 56 - 88);

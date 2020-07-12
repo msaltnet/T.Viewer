@@ -243,4 +243,14 @@ describe('LogMonitor.vue', () => {
     expect(vm.getEditorHeight()).toEqual(500 - 88 - 56);
   })
 
+  it('should call addEventListener with handleResize when mounted is called', () => {
+    window.addEventListener = jest.fn();
+    const wrapper = mount(LogMonitor, {
+      localVue,
+      vuetify,
+    })
+    const vm = wrapper.vm;
+    expect(window.addEventListener).toBeCalledWith('resize', vm.handleResize);
+  })
+
 })
