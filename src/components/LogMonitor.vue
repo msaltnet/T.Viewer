@@ -7,7 +7,32 @@
 
       <v-divider class="mx-3" inset vertical></v-divider>
       <v-flex xs4>
-          <v-select dense v-model="logLevelsSelected" :items="logLevels"></v-select>
+
+      <v-menu
+        :offset-y="true"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            small
+            min-width="120"
+            color="blue-grey lighten-3"
+            v-bind="attrs"
+            v-on="on"
+          >
+            {{ logLevelsSelected }}
+          </v-btn>
+        </template>
+        <v-list dense>
+          <v-list-item
+            v-for="(item, index) in logLevels"
+            :key="index"
+            @click="onLevelClicked(item)"
+          >
+            <v-list-item-title>{{ item }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
       </v-flex>
       <v-spacer></v-spacer>
 
@@ -60,6 +85,9 @@ export default {
     window.addEventListener('resize', this.handleResize);
   },
   methods: {
+    onLevelClicked: function (selectedLevel) {
+      this.logLevelsSelected = selectedLevel;
+    },
     onSwitchChanged: function () {
       if (this.isListenerOn) {
         this.listenerTag = this.logListener.registerListener(this.onMessageReceived);
