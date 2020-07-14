@@ -1,9 +1,18 @@
 <template>
   <div>
     <v-toolbar color="grey lighten-5 elevation-0" :height="toolbarHeight">
-      <v-btn icon class="mx-1">
-        <v-icon>mdi-filter</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon class="mx-1"
+            v-bind="attrs"
+            v-on="on"
+            @click.stop="dialog = true">
+            <v-icon>mdi-filter</v-icon>
+          </v-btn>
+        </template>
+        <span>Tag: {{ getTagFilter }}</span><br>
+        <span>Message: {{ getMessageFilter }}</span>
+      </v-tooltip>
 
       <v-divider class="mx-3" inset vertical></v-divider>
       <v-flex xs4>
@@ -13,7 +22,7 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            small
+            x-small
             min-width="120"
             color="blue-grey lighten-3"
             v-bind="attrs"
@@ -53,6 +62,40 @@
     </v-toolbar>
 
     <div ref="viewer" :style="{'height': editorHeight + 'px'}"></div>
+
+    <v-dialog
+      v-model="dialog"
+      max-width="500"
+    >
+      <v-card>
+        <v-card-title class="headline">{{ tabName }} Filter Settings</v-card-title>
+
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="9">
+                <v-text-field label="Tag" v-model="tagFilter"></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-checkbox
+                  v-model="tagRegex"
+                  label="regex"
+                ></v-checkbox>
+              </v-col>
+              <v-col cols="9">
+                <v-text-field label="Message" v-model="messageFilter"></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-checkbox
+                  v-model="messageRegex"
+                  label="regex"
+                ></v-checkbox>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -62,11 +105,16 @@ import LogListener from '../LogListener';
 import GlobalSettings from '../globalSettings';
 import { ipcRenderer } from 'electron';
 export default {
-  props: ['listenSwitch', 'listenerId', 'filter'],
+  props: ['listenSwitch', 'listenerId', 'filter', 'tabName'],
   data: function () {
     return {
+      dialog: false,
       toolbarHeight: 40,
       isListenerOn: false,
+      tagFilter: '',
+      messageFilter: '',
+      tagRegex: false,
+      messageRegex: false,
       logLevels: ["Verbose", "Debug", "Info", "Warning", "Error", "Fatal"],
       logLevelChars: ["V", "D", "I", "W", "E", "F"],
       logLevelsSelected: "Verbose", //TO DO load from settings
@@ -75,6 +123,12 @@ export default {
     }
   },
   computed: {
+    getTagFilter: function() {
+      return this.tagFilter == '' ? '-' : this.tagFilter;
+    },
+    getMessageFilter: function() {
+      return this.messageFilter == '' ? '-' : this.messageFilter;
+    }
   },
   created: function() {
     this.logListener = new LogListener(ipcRenderer);
@@ -102,7 +156,7 @@ export default {
 
         contents.map(line => {
           return {
-            show: this.filterLogLevel(line),
+            show: this.filterLogLevel(line) && this.filterTag(line) && this.filterMessage(line),
             line: line
           };
         })
@@ -122,8 +176,8 @@ export default {
       this.editorHeight = this.getEditorHeight();
     },
     getEditorHeight: function () {
-      // console.log(window.innerHeight - 56 - 88);
-      return window.innerHeight - 56 - 88;
+      // console.log(window.innerHeight - 64 - 88);
+      return window.innerHeight - 64 - 88;
     },
     // 07-10 14:51:21.337+0900 I/RESOURCED( 2617): heart-battery.c:....
     filterLogLevel: function (line) {
@@ -145,7 +199,25 @@ export default {
       } else {
         return logLevelIndex == 0;
       }
-    }
+    },
+    // 07-10 14:51:21.337+0900 I/RESOURCED( 2617): heart-battery.c:....
+    filterTag: function (line) {
+      if (this.tagFilter == '')
+        return true;
+
+      const LOG_LEVEL_CHAR_START_POSITION = 26;
+      let tagEndIndex = line.indexOf('(');
+      let tag = line.substring(LOG_LEVEL_CHAR_START_POSITION, tagEndIndex);
+      tag = tag.replace(/\s/g, '');
+      return tag === this.tagFilter;
+    },
+    // 07-10 14:51:21.337+0900 I/RESOURCED( 2617): heart-battery.c:....
+    filterMessage: function (line) {
+      if (this.messageFilter == '')
+        return true;
+
+      return -1 != line.indexOf(this.messageFilter);
+    },
   }
 }
 </script>

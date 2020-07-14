@@ -232,6 +232,62 @@ describe('LogMonitor.vue', () => {
     expect(vm.filterLogLevel(msgLevel4)).toEqual(true);
   })
 
+  it('should filterTag return true when messageFilter is empty string', () => {
+    const wrapper = mount(LogMonitor, {
+      localVue,
+      vuetify,
+    })
+    const msgTagBanana = "07-10 14:51:21.337+0900 V/Banana( 2617): heart-battery.c banana";
+    const msgTagOrange = "07-10 14:51:21.337+0900 F/Orange( 2617): heart-battery.c orange";
+    const vm = wrapper.vm;
+    vm.tagFilter = '';
+    expect(vm.filterTag(msgTagBanana)).toEqual(true);
+    expect(vm.filterTag(msgTagOrange)).toEqual(true);
+  })
+
+  it('should filterTag return correct value', () => {
+    const wrapper = mount(LogMonitor, {
+      localVue,
+      vuetify,
+    })
+    const msgTagBanana = "07-10 14:51:21.337+0900 V/Banana( 2617): heart-battery.c banana";
+    const msgTagOrange = "07-10 14:51:21.337+0900 F/Orange( 2617): heart-battery.c orange";
+    const msgTagMangoSpace = "07-10 14:51:21.337+0900 F/Mango   ( 2617): heart-battery.c orange";
+    const vm = wrapper.vm;
+    vm.tagFilter = 'Banana';
+    expect(vm.filterTag(msgTagBanana)).toEqual(true);
+    expect(vm.filterTag(msgTagOrange)).toEqual(false);
+
+    vm.tagFilter = 'Mango';
+    expect(vm.filterTag(msgTagMangoSpace)).toEqual(true);
+  })
+
+  it('should filterMessage return true when messageFilter is empty string', () => {
+    const wrapper = mount(LogMonitor, {
+      localVue,
+      vuetify,
+    })
+    const msgBanana = "07-10 14:51:21.337+0900 V/RESOURCED( 2617): heart-battery.c banana";
+    const msgOrange = "07-10 14:51:21.337+0900 F/RESOURCED( 2617): heart-battery.c orange";
+    const vm = wrapper.vm;
+    vm.messageFilter = '';
+    expect(vm.filterMessage(msgBanana)).toEqual(true);
+    expect(vm.filterMessage(msgOrange)).toEqual(true);
+  })
+
+  it('should filterMessage return correct value', () => {
+    const wrapper = mount(LogMonitor, {
+      localVue,
+      vuetify,
+    })
+    const msgBanana = "07-10 14:51:21.337+0900 V/RESOURCED( 2617): heart-battery.c banana";
+    const msgOrange = "07-10 14:51:21.337+0900 F/RESOURCED( 2617): heart-battery.c orange";
+    const vm = wrapper.vm;
+    vm.messageFilter = 'banana';
+    expect(vm.filterMessage(msgBanana)).toEqual(true);
+    expect(vm.filterMessage(msgOrange)).toEqual(false);
+  })
+
   it('should return correct height when getEditorHeight is called', () => {
     const wrapper = mount(LogMonitor, {
       localVue,
@@ -239,8 +295,8 @@ describe('LogMonitor.vue', () => {
     })
     const vm = wrapper.vm;
     window.innerHeight = 500;
-    // "- 88 - 56" is temporary value
-    expect(vm.getEditorHeight()).toEqual(500 - 88 - 56);
+    // "- 88 - 64" is temporary value
+    expect(vm.getEditorHeight()).toEqual(500 - 88 - 64);
   })
 
   it('should call addEventListener with handleResize when mounted is called', () => {
