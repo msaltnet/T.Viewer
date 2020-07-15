@@ -9,7 +9,7 @@
       <v-spacer></v-spacer>
 
       <v-btn icon class="mx-1">
-        <v-icon>mdi-settings</v-icon>
+        <v-icon>mdi-cog</v-icon>
       </v-btn>
 
       <v-switch
@@ -31,30 +31,18 @@
         <v-tab
           :href="'#tab-main'"
         >Main</v-tab>
-        <v-tab
-          :href="'#tab-1'"
-        >ft.1</v-tab>
-        <v-tab
-          :href="'#tab-2'"
-        >ft.2</v-tab>
-        <v-tab
-          :href="'#tab-3'"
-        >ft.3</v-tab>
-        <v-tab
-          :href="'#tab-4'"
-        >ft.4</v-tab>
-        <v-tab
-          :href="'#tab-5'"
-        >ft.5</v-tab>
-        <v-tab
-          :href="'#tab-6'"
-        >ft.6</v-tab>
-        <v-tab
-          :href="'#tab-7'"
-        >ft.7</v-tab>
-        <v-tab
-          :href="'#tab-8'"
-        >ft.8</v-tab>
+
+        <v-tab v-for="(tab, i) in tabs" :key="tab.id" :title="tab.name" :href="'#tab' + tab.id">
+          {{ tab.name }}
+          <v-btn icon class="align-self-center ml-1" @click.stop.prevent="closeTab(i)">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-tab>
+
+        <v-btn icon class="align-self-center" color="grey darken-1" @click="createNewTab()">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+
       </v-tabs>
 
       <v-tabs-items v-model="currentItem">
@@ -63,87 +51,15 @@
           <LogMonitor
             v-bind:listenSwitch="switchListen"
             listenerId="listener-0"
+            filter=''
+          />
+        </v-tab-item>
+
+        <v-tab-item v-for="tab in tabs" :key="tab.id" :value="'tab' + tab.id" >
+          <LogMonitor
+            v-bind:listenSwitch="switchListen"
+            v-bind:listenerId="'listener-' + tab.id"
             filter=""
-          />
-        </v-tab-item>
-        <v-tab-item
-          :value="'tab-1'"
-        >
-          TAB-1 filter="W_HOME"
-          <LogMonitor
-            v-bind:listenSwitch="switchListen"
-            listener-id="listener-1"
-            filter="W_HOME"
-          />
-        </v-tab-item>
-        <v-tab-item
-          :value="'tab-2'"
-        >
-          TAB-2 filter="CAPI"
-          <LogMonitor
-            v-bind:listenSwitch="switchListen"
-            listener-id="listener-2"
-            filter="CAPI"
-          />
-        </v-tab-item>
-        <v-tab-item
-          :value="'tab-3'"
-        >
-          TAB-3 filter="watchface"
-          <LogMonitor
-            v-bind:listenSwitch="switchListen"
-            listener-id="listener-3"
-            filter="watchface"
-          />
-        </v-tab-item>
-        <v-tab-item
-          :value="'tab-4'"
-        >
-          TAB-4 filter="watch_app_main"
-          <LogMonitor
-            v-bind:listenSwitch="switchListen"
-            listener-id="listener-4"
-            filter="watch_app_main"
-          />
-        </v-tab-item>
-        <v-tab-item
-          :value="'tab-5'"
-        >
-          TAB-5 filter="MANAGER"
-          <LogMonitor
-            v-bind:listenSwitch="switchListen"
-            listener-id="listener-5"
-            filter="MANAGER"
-          />
-        </v-tab-item>
-        <v-tab-item
-          :value="'tab-6'"
-        >
-          TAB-6 filter="CORE"
-          <LogMonitor
-            v-bind:listenSwitch="switchListen"
-            listener-id="listener-6"
-            filter="CORE"
-          />
-        </v-tab-item>
-        <v-tab-item
-          :value="'tab-7'"
-        >
-          TAB-7 filter="SOUND"
-          <LogMonitor
-            v-bind:listenSwitch="switchListen"
-            listener-id="listener-7"
-            filter="SOUND"
-          />
-        </v-tab-item>
-        <v-tab-item
-          :value="'tab-8'"
-        >
-          TAB-8 filter="samsung"
-          <LogMonitor
-            v-bind:listenSwitch="switchListen"
-            listener-id="listener-8"
-            filter="samsung"
           />
         </v-tab-item>
       </v-tabs-items>
@@ -163,17 +79,29 @@ export default {
     LogMonitor,
   },
   data: () => ({
+    increamentalId: 0,
+    tabs: [],
     currentItem: 'tab-main',
     switchListen: false
   }),
   methods: {
+    getNewTabId: function () {
+      return this.increamentalId++;
+    },
     onSwitchChange: function () {
       let command = '';
       if (this.switchListen)
         command = 'start';
 
       ipcRenderer.send(POWER_EVENT_CHANNEL, command);
-    }
+    },
+    createNewTab() {
+      let id = this.getNewTabId();
+      this.tabs.push({id: id, name: "tab-" + id});
+    },
+    closeTab(index) {
+      this.tabs.splice(index, 1);
+    },
   }
 };
 </script>
