@@ -1,21 +1,102 @@
 <template>
-  <v-container>
-    <v-row
-      text-center
-      wrap
-    >
-      <v-btn
-        v-bind:outlined="!isListenerOn"
-        block
-        color="primary"
-        v-on:click="onStartButton"
-        >
-        {{ btnText }}
+  <div>
+    <v-toolbar color="grey lighten-5 elevation-0" :height="toolbarHeight">
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon class="mx-1"
+            v-bind="attrs"
+            v-on="on"
+            @click.stop="dialog = true">
+            <v-icon>mdi-filter</v-icon>
+          </v-btn>
+        </template>
+        <span>Tag: {{ getTagFilter }}</span><br>
+        <span>Message: {{ getMessageFilter }}</span>
+      </v-tooltip>
+
+      <v-divider class="mx-3" inset vertical></v-divider>
+      <v-flex xs4>
+
+      <v-menu
+        :offset-y="true"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            x-small
+            min-width="120"
+            color="blue-grey lighten-3"
+            v-bind="attrs"
+            v-on="on"
+          >
+            {{ logLevelsSelected }}
+          </v-btn>
+        </template>
+        <v-list dense>
+          <v-list-item
+            v-for="(item, index) in logLevels"
+            :key="index"
+            @click="onLevelClicked(item)"
+          >
+            <v-list-item-title>{{ item }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+      </v-flex>
+      <v-spacer></v-spacer>
+
+      <v-divider class="mx-3" inset vertical></v-divider>
+
+      <v-btn icon class="mx-1">
+        <v-icon>mdi-cog</v-icon>
       </v-btn>
-      {{ message }}
-      <div ref="viewer" :style="{'height': '500px', 'width': '100%'}"></div>
-    </v-row>
-  </v-container>
+
+      <v-switch
+        dense
+        hide-details
+        v-model="isListenerOn"
+        v-on:change="onSwitchChanged"
+        class="mx-1"
+        :label="'Listen'"
+      ></v-switch>
+    </v-toolbar>
+
+    <div ref="viewer" :style="{'height': editorHeight + 'px'}"></div>
+
+    <v-dialog
+      v-model="dialog"
+      max-width="500"
+    >
+      <v-card>
+        <v-card-title class="headline">{{ tabName }} Filter Settings</v-card-title>
+
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="9">
+                <v-text-field label="Tag" v-model="tagFilter"></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-checkbox
+                  v-model="tagRegex"
+                  label="regex"
+                ></v-checkbox>
+              </v-col>
+              <v-col cols="9">
+                <v-text-field label="Message" v-model="messageFilter"></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-checkbox
+                  v-model="messageRegex"
+                  label="regex"
+                ></v-checkbox>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
@@ -24,15 +105,29 @@ import LogListener from '../LogListener';
 import GlobalSettings from '../globalSettings';
 import { ipcRenderer } from 'electron';
 export default {
-  props: ['listenSwitch', 'listenerId', 'filter'],
-  data: () => ({
-      message: 'No Log Bom',
-      isListenerOn: true,
-      globalSettings: new GlobalSettings()
-  }),
+  props: ['listenSwitch', 'listenerId', 'filter', 'tabName'],
+  data: function () {
+    return {
+      dialog: false,
+      toolbarHeight: 40,
+      isListenerOn: false,
+      tagFilter: '',
+      messageFilter: '',
+      tagRegex: false,
+      messageRegex: false,
+      logLevels: ["Verbose", "Debug", "Info", "Warning", "Error", "Fatal"],
+      logLevelChars: ["V", "D", "I", "W", "E", "F"],
+      logLevelsSelected: "Verbose", //TO DO load from settings
+      globalSettings: new GlobalSettings(),
+      editorHeight: this.getEditorHeight(),
+    }
+  },
   computed: {
-    btnText() {
-      return this.isListenerOn ? 'On' : 'Off';
+    getTagFilter: function() {
+      return this.tagFilter == '' ? '-' : this.tagFilter;
+    },
+    getMessageFilter: function() {
+      return this.messageFilter == '' ? '-' : this.messageFilter;
     }
   },
   created: function() {
@@ -41,42 +136,88 @@ export default {
   },
   mounted: function() {
     this.viewer = AceEditor.createViewer(this.$refs.viewer, this.globalSettings);
+    window.addEventListener('resize', this.handleResize);
   },
   methods: {
-    onStartButton: function () {
-      console.log(this.listenerId);
+    onLevelClicked: function (selectedLevel) {
+      this.logLevelsSelected = selectedLevel;
+    },
+    onSwitchChanged: function () {
       if (this.isListenerOn) {
-        this.isListenerOn = false;
         this.listenerTag = this.logListener.registerListener(this.onMessageReceived);
-        console.log(this.listenerTag);
+        // console.log(this.listenerTag);
       } else {
-        this.isListenerOn = true;
         this.logListener.unregisterListener(this.listenerTag);
       }
     },
     onMessageReceived: function (msg) {
-      let contents = msg.split('\r\n');
-      contents.map(line => {
-        let show = false;
+      try {
+        let contents = msg.split('\r\n');
 
-        if (line.indexOf(this.filter) != -1) {
-          show = true;
-        }
+        contents.map(line => {
+          return {
+            show: this.filterLogLevel(line) && this.filterTag(line) && this.filterMessage(line),
+            line: line
+          };
+        })
+        .filter(line => line.show)
+        .map(line => {
+          this.viewer.navigateLineEnd();
+          this.viewer.insert(line.line);
+          return line;
+        });
 
-        return {
-          show: show,
-          line: line
-        };
-      })
-      .filter(line => line.show)
-      .map(line => {
-        this.viewer.navigateLineEnd();
-        this.viewer.insert(line.line);
-        return line;
-      });
+        this.viewer.scrollToLine(this.viewer.session.getLength());
+      } catch {
+        console.log("Invaild log text is received!");
+      }
+    },
+    handleResize() {
+      this.editorHeight = this.getEditorHeight();
+    },
+    getEditorHeight: function () {
+      // console.log(window.innerHeight - 64 - 88);
+      return window.innerHeight - 64 - 88;
+    },
+    // 07-10 14:51:21.337+0900 I/RESOURCED( 2617): heart-battery.c:....
+    filterLogLevel: function (line) {
+      const LOG_LEVEL_CHAR_START_POSITION = 24;
+      let logLevelIndex = this.logLevels.indexOf(this.logLevelsSelected);
+      let logChar = line.substr(LOG_LEVEL_CHAR_START_POSITION,1);
 
-      this.viewer.scrollToLine(this.viewer.session.getLength());
-    }
+      if (logLevelIndex == 0 || this.logLevelChars[5] == logChar)
+        return true;
+
+      if (this.logLevelChars[4] == logChar) {
+        return logLevelIndex <= 4;
+      } else if (this.logLevelChars[3] == logChar) {
+        return logLevelIndex <= 3;
+      } else if (this.logLevelChars[2] == logChar) {
+        return logLevelIndex <= 2;
+      } else if (this.logLevelChars[1] == logChar) {
+        return logLevelIndex <= 1;
+      } else {
+        return logLevelIndex == 0;
+      }
+    },
+    // 07-10 14:51:21.337+0900 I/RESOURCED( 2617): heart-battery.c:....
+    filterTag: function (line) {
+      if (this.tagFilter == '')
+        return true;
+
+      const LOG_LEVEL_CHAR_START_POSITION = 26;
+      let tagEndIndex = line.indexOf('(');
+      let tag = line.substring(LOG_LEVEL_CHAR_START_POSITION, tagEndIndex);
+      tag = tag.replace(/\s/g, '');
+      return tag === this.tagFilter;
+    },
+    // 07-10 14:51:21.337+0900 I/RESOURCED( 2617): heart-battery.c:....
+    filterMessage: function (line) {
+      if (this.messageFilter == '')
+        return true;
+
+      return -1 != line.indexOf(this.messageFilter);
+    },
   }
 }
 </script>

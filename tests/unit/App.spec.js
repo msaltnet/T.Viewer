@@ -24,4 +24,22 @@ describe('App.vue', () => {
     expect(ipcRenderer.send).toBeCalledWith("change-power", expect.not.stringMatching("start"));
   })
 
+  it('should insert new tab item correctly when createNewTab is called', () => {
+    const vm = shallowMount(App).vm;
+    let before = vm.tabs.length;
+    let currentId = vm.increamentalId;
+    vm.createNewTab();
+    expect(vm.tabs.length).toEqual(before+1);
+    expect(vm.tabs[before].id).toEqual(currentId);
+    expect(vm.tabs[before].name).toEqual("tab-" + currentId);
+  })
+
+  it('should remove a tab correctly when createNewTab is called', () => {
+    const vm = shallowMount(App).vm;
+    vm.tabs = ["mango", "banana"];
+    vm.closeTab(0);
+    expect(vm.tabs.length).toEqual(1);
+    expect(vm.tabs[0]).toEqual("banana");
+  })
+
 })
