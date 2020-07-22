@@ -15,10 +15,11 @@
       <v-switch
         dense
         hide-details
+        color="red"
         v-model="switchListen"
         v-on:change="onSwitchChange"
+        prepend-icon="mdi-power"
         class="mx-1"
-        :label="'Power'"
       ></v-switch>
     </v-app-bar>
 

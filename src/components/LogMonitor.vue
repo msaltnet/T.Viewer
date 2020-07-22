@@ -16,36 +16,40 @@
 
       <v-divider class="mx-3" inset vertical></v-divider>
       <v-flex xs4>
-
-      <v-menu
-        :offset-y="true"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            x-small
-            min-width="120"
-            color="blue-grey lighten-3"
-            v-bind="attrs"
-            v-on="on"
-          >
-            {{ logLevelsSelected }}
-          </v-btn>
-        </template>
-        <v-list dense>
-          <v-list-item
-            v-for="(item, index) in logLevels"
-            :key="index"
-            @click="onLevelClicked(item)"
-          >
-            <v-list-item-title>{{ item }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-
+        <v-menu
+          :offset-y="true"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              x-small
+              min-width="120"
+              color="blue-grey lighten-3"
+              v-bind="attrs"
+              v-on="on"
+            >
+              {{ logLevelsSelected }}
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item
+              v-for="(item, index) in logLevels"
+              :key="index"
+              @click="onLevelClicked(item)"
+            >
+              <v-list-item-title>{{ item }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-flex>
+
       <v-spacer></v-spacer>
 
       <v-divider class="mx-3" inset vertical></v-divider>
+
+      <v-btn icon class="mx-1"
+        @click="onClearClicked()">
+        <v-icon>mdi-delete</v-icon>
+      </v-btn>
 
       <v-btn icon class="mx-1">
         <v-icon>mdi-cog</v-icon>
@@ -54,11 +58,13 @@
       <v-switch
         dense
         hide-details
+        color="indigo"
         v-model="isListenerOn"
+        prepend-icon="mdi-download"
         v-on:change="onSwitchChanged"
         class="mx-1"
-        :label="'Listen'"
       ></v-switch>
+
     </v-toolbar>
 
     <div ref="viewer" :style="{'height': editorHeight + 'px'}"></div>
@@ -139,6 +145,9 @@ export default {
     window.addEventListener('resize', this.handleResize);
   },
   methods: {
+    onClearClicked: function () {
+      console.log('Clear');
+    },
     onLevelClicked: function (selectedLevel) {
       this.logLevelsSelected = selectedLevel;
     },
