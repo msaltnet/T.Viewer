@@ -51,8 +51,10 @@
         <v-icon>mdi-delete</v-icon>
       </v-btn>
 
-      <v-btn icon class="mx-1">
-        <v-icon>mdi-cog</v-icon>
+      <v-btn icon class="mx-1"
+        @click="dialogForTag = !dialogForTag"
+      >
+        <v-icon>mdi-tag</v-icon>
       </v-btn>
 
       <v-switch
@@ -102,6 +104,39 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+
+    <v-dialog
+      v-model="dialogForTag"
+      persistent
+      max-width="500px"
+    >
+      <v-card>
+        <v-card-title>
+          Tab Name
+        </v-card-title>
+        <v-card-text>
+          <v-text-field v-model="newTabName"></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            text
+            @click="onNameCloseClicked()"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            color="primary"
+            text
+            @click="onNameSaveClicked()"
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </div>
 </template>
 
@@ -111,10 +146,12 @@ import LogListener from '../LogListener';
 import GlobalSettings from '../globalSettings';
 import { ipcRenderer } from 'electron';
 export default {
-  props: ['listenSwitch', 'listenerId', 'filter', 'tabName'],
+  props: ['listenSwitch', 'listenerId', 'tabName', 'isMain'],
   data: function () {
     return {
       dialog: false,
+      dialogForTag: false,
+      newTabName: '',
       toolbarHeight: 40,
       isListenerOn: false,
       tagFilter: '',
@@ -139,14 +176,24 @@ export default {
   created: function() {
     this.logListener = new LogListener(ipcRenderer);
     AceEditor.init(this.globalSettings);
+    this.newTabName = this.tabName;
   },
   mounted: function() {
     this.viewer = AceEditor.createViewer(this.$refs.viewer, this.globalSettings);
     window.addEventListener('resize', this.handleResize);
   },
   methods: {
+    onNameCloseClicked: function () {
+      this.newTabName = this.tabName;
+      this.dialogForTag = false;
+    },
+    onNameSaveClicked: function () {
+      let str = this.newTabName;
+      this.$emit('update:tabName', str);
+      this.dialogForTag = false;
+    },
     onClearClicked: function () {
-      console.log('Clear');
+      this.viewer.setValue('');
     },
     onLevelClicked: function (selectedLevel) {
       this.logLevelsSelected = selectedLevel;

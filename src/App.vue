@@ -31,7 +31,7 @@
       >
         <v-tab
           :href="'#tab-main'"
-        >Main</v-tab>
+        >MAIN</v-tab>
 
         <v-tab v-for="(tab, i) in tabs" :key="tab.id" :title="tab.name" :href="'#tab' + tab.id">
           {{ tab.name }}
@@ -52,7 +52,8 @@
           <LogMonitor
             v-bind:listenSwitch="switchListen"
             listenerId="listener-0"
-            filter=''
+            tabName="MAIN"
+            isMain="true"
           />
         </v-tab-item>
 
@@ -60,7 +61,8 @@
           <LogMonitor
             v-bind:listenSwitch="switchListen"
             v-bind:listenerId="'listener-' + tab.id"
-            filter=""
+            v-bind:tabName.sync="tab.name"
+            isMain="false"
           />
         </v-tab-item>
       </v-tabs-items>
