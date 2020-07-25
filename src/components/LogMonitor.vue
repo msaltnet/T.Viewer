@@ -141,7 +141,7 @@
 </template>
 
 <script>
-import AceEditor from '../aceEditor';
+import AceEditor from '../AceEditor';
 import LogListener from '../LogListener';
 import GlobalSettings from '../globalSettings';
 import { ipcRenderer } from 'electron';
@@ -175,7 +175,7 @@ export default {
   },
   created: function() {
     this.logListener = new LogListener(ipcRenderer);
-    AceEditor.init(this.globalSettings);
+    AceEditor.init();
     this.newTabName = this.tabName;
   },
   mounted: function() {

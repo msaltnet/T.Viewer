@@ -1,0 +1,24 @@
+.ace_verbose {
+  color: #616161;
+}
+
+.ace_debug {
+  color: #2070a8;
+}
+
+.ace_info {
+  color: #567046;
+}
+
+.ace_warning {
+  color: #aa6325;
+}
+
+.ace_error {
+  color: #c74442;
+}
+
+.ace_fatal {
+  color: #72408f;
+  background: #AAA;
+}

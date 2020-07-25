@@ -1,5 +1,5 @@
 var instance;
-export default class {
+export default class LogListener {
     constructor (ipcRenderer) {
         if (instance) return instance;
 

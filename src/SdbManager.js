@@ -1,4 +1,4 @@
-export default class {
+export default class SdbManager {
     constructor(spawn) {
         this.isRunning = false;
         this.const = {

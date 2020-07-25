@@ -1,84 +1,71 @@
-import Utils from './utils';
-const ace = require("ace-builds/src-noconflict/ace.js");
-require("ace-builds/src-noconflict/ext-searchbox.js");
+import ace from "ace-builds"
+import 'ace-builds/webpack-resolver';
 
 export default class AceEditor {
-    static init(globalSettings) {
-        ace.define('ace/mode/log_file', (require, exports) => {
+    static init() {
+        ace.define('ace/mode/log', (require, exports) => {
             const oop = require("ace/lib/oop");
             const TextMode = require("ace/mode/text").Mode;
-            const LogFileHighlightRules = require("ace/mode/log_file_highlight_rules").LogFileHighlightRules;
+            const LogHighlightRules = require("ace/mode/log_highlight_rules").LogHighlightRules;
 
             const Mode = function() {
-                this.HighlightRules = LogFileHighlightRules;
+                this.HighlightRules = LogHighlightRules;
             };
-
             oop.inherits(Mode, TextMode);
-
-            (function() {
-                // Extra logic goes here. (see below)
-            }).call(Mode.prototype);
 
             exports.Mode = Mode;
         });
 
-        ace.define('ace/mode/log_file_highlight_rules', (require, exports) => {
+        ace.define('ace/mode/log_highlight_rules', (require, exports) => {
             const oop = require("ace/lib/oop");
             const TextHighlightRules = require("ace/mode/text_highlight_rules").TextHighlightRules;
-            
-            const debugRule = {
-                token: "debug",
-                regex: ".*" + Utils.escapeRegExp(globalSettings.debug.pattern) + ".*",
-                next: "debug"
-            };
 
-            const infoRule = {
-                token: "info",
-                regex: ".*" + Utils.escapeRegExp(globalSettings.info.pattern) + ".*",
-                next: "info"
-            };
-
-            const warningRule = {
-                token: "warning",
-                regex: ".*" + Utils.escapeRegExp(globalSettings.warning.pattern) + ".*",
-                next: "warning"
-            };
-
-            const errorRule = {
-                token: "error",
-                regex: ".*" + Utils.escapeRegExp(globalSettings.error.pattern) + ".*",
-                next: "error"
-            };
-
-            const fatalRule = {
-                token: "fatal",
-                regex: ".*" + Utils.escapeRegExp(globalSettings.fatal.pattern) + ".*",
-                next: "fatal"
-            };
-
-            function noMatchRule(severity) {
-                return {
-                    token: severity,
-                    regex: "^.*$",
-                    next: severity
-                };
-            }
-            
-            const LogFileHighlightRules = function() {
+            const LogHighlightRules = function() {
                 this.$rules = {
-                    start: [debugRule, infoRule, warningRule, errorRule, fatalRule],
-                    debug: [debugRule, infoRule, warningRule, errorRule, fatalRule, noMatchRule("debug")],
-                    info: [debugRule, infoRule, warningRule, errorRule, fatalRule, noMatchRule("info")],
-                    warning: [debugRule, infoRule, warningRule, errorRule, fatalRule, noMatchRule("warning")],
-                    error: [debugRule, infoRule, warningRule, errorRule, fatalRule, noMatchRule("error")],
-                    fatal: [debugRule, infoRule, warningRule, errorRule, fatalRule, noMatchRule("fatal")]
+                    start: AceEditor.createRule()
                 };
             }
 
-            oop.inherits(LogFileHighlightRules, TextHighlightRules);
-
-            exports.LogFileHighlightRules = LogFileHighlightRules;
+            oop.inherits(LogHighlightRules, TextHighlightRules);
+            exports.LogHighlightRules = LogHighlightRules;
         });
+    }
+
+    static createRule() {
+        //07-10 14:51:21.337+0900 D/RESOURCED( 2617): heart-battery.c:....
+        //D/RESOURCED( 2617): heart-battery.c:....
+
+        const verboseRule = {
+            token: "verbose",
+            regex: "^V.*|^[0-9].{23}V.*"
+        };
+
+        const debugRule = {
+            token: "debug",
+            regex: "^D.*|^[0-9].{23}D.*"
+        };
+
+        const infoRule = {
+            token: "info",
+            regex: "^I.*|^[0-9].{23}I.*"
+        };
+
+        const warningRule = {
+            token: "warning",
+            regex: "^W.*|^[0-9].{23}W.*"
+        };
+
+        const errorRule = {
+            token: "error",
+            regex: "^E.*|^[0-9].{23}E.*"
+        };
+
+        const fatalRule = {
+            token: "fatal",
+            regex: "^F.*|^[0-9].{23}F.*"
+        };
+
+        return [verboseRule, debugRule, infoRule, warningRule, errorRule, fatalRule];
     }
 
     static createViewer(DOMElement, globalSettings) {
@@ -88,7 +75,7 @@ export default class AceEditor {
             readOnly: true,
             highlightActiveLine: false,
             showPrintMargin: false,
-            mode: "ace/mode/log_file",
+            mode: "ace/mode/log",
             fontFamily: "Consolas, monaco, 'Courier New', Courier, monospace",
             fontSize: globalSettings.fontSize + "px"
         });
