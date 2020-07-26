@@ -86,8 +86,9 @@
               </v-col>
               <v-col cols="3">
                 <v-checkbox
-                  v-model="tagRegex"
+                  v-model="tagRegexSetting"
                   label="regex"
+                  v-on:change="onChangeTagRegex()"
                 ></v-checkbox>
               </v-col>
               <v-col cols="9">
@@ -95,8 +96,9 @@
               </v-col>
               <v-col cols="3">
                 <v-checkbox
-                  v-model="messageRegex"
+                  v-model="messageRegexSetting"
                   label="regex"
+                  v-on:change="onChangeMessageRegex()"
                 ></v-checkbox>
               </v-col>
             </v-row>
@@ -156,8 +158,10 @@ export default {
       isListenerOn: false,
       tagFilter: '',
       messageFilter: '',
-      tagRegex: false,
-      messageRegex: false,
+      tagRegexSetting: false,
+      tagRegex: null,
+      messageRegexSetting: false,
+      messageRegex: null,
       logLevels: ["Verbose", "Debug", "Info", "Warning", "Error", "Fatal"],
       logLevelChars: ["V", "D", "I", "W", "E", "F"],
       logLevelsSelected: "Verbose", //TO DO load from settings
@@ -183,6 +187,14 @@ export default {
     window.addEventListener('resize', this.handleResize);
   },
   methods: {
+    onChangeTagRegex: function () {
+      if (this.tagRegexSetting)
+        this.tagRegex = new RegExp(this.tagFilter, 'u');
+    },
+    onChangeMessageRegex: function () {
+      if (this.messageRegexSetting)
+        this.messageRegex = new RegExp(this.messageFilter, 'u');
+    },
     onNameCloseClicked: function () {
       this.newTabName = this.tabName;
       this.dialogForTag = false;
@@ -265,14 +277,20 @@ export default {
       let tagEndIndex = line.indexOf('(');
       let tag = line.substring(LOG_LEVEL_CHAR_START_POSITION, tagEndIndex);
       tag = tag.replace(/\s/g, '');
-      return tag === this.tagFilter;
+      if (!this.tagRegexSetting)
+        return tag === this.tagFilter;
+
+      return this.tagRegex.test(tag);
     },
     // 07-10 14:51:21.337+0900 I/RESOURCED( 2617): heart-battery.c:....
     filterMessage: function (line) {
       if (this.messageFilter == '')
         return true;
 
-      return -1 != line.indexOf(this.messageFilter);
+      if (!this.messageRegexSetting)
+        return -1 != line.indexOf(this.messageFilter);
+
+      return this.messageRegex.test(line);
     },
   }
 }
