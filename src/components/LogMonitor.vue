@@ -46,6 +46,25 @@
 
       <v-divider class="mx-3" inset vertical></v-divider>
 
+      <v-btn-toggle
+        v-model="controlButtonStates"
+        color="primary"
+        dense
+        group
+        multiple
+        v-on:change="onChangeControlButton()"
+      >
+        <v-btn :value="1" text>
+          <v-icon>mdi-wrap</v-icon>
+        </v-btn>
+
+        <v-btn :value="2" text>
+          <v-icon>mdi-format-align-bottom</v-icon>
+        </v-btn>
+      </v-btn-toggle>
+
+      <v-divider class="mx-3" inset vertical></v-divider>
+
       <v-btn icon class="mx-1"
         @click="onClearClicked()">
         <v-icon>mdi-delete</v-icon>
@@ -151,6 +170,8 @@ export default {
   props: ['listenSwitch', 'listenerId', 'tabName', 'isMain'],
   data: function () {
     return {
+      controlButtonStates: [2],
+      autoScroll: true,
       dialog: false,
       dialogForTag: false,
       newTabName: '',
@@ -187,6 +208,17 @@ export default {
     window.addEventListener('resize', this.handleResize);
   },
   methods: {
+    onChangeControlButton: function () {
+      if (this.controlButtonStates.indexOf(1) != -1)
+        this.setWrap(true);
+      else
+        this.setWrap(false);
+
+      if (this.controlButtonStates.indexOf(2) != -1)
+        this.autoScroll = true;
+      else
+        this.autoScroll = false;
+    },
     onChangeTagRegex: function () {
       if (this.tagRegexSetting)
         this.tagRegex = new RegExp(this.tagFilter, 'u');
@@ -238,10 +270,14 @@ export default {
           return line;
         });
 
-        this.viewer.scrollToLine(this.viewer.session.getLength());
+        if (this.autoScroll)
+          this.viewer.scrollToLine(this.viewer.session.getLength());
       } catch {
         console.log("Invaild log text is received!");
       }
+    },
+    setWrap: function (on) {
+      this.viewer.session.setUseWrapMode(on);
     },
     handleResize() {
       this.editorHeight = this.getEditorHeight();

@@ -43,6 +43,41 @@ describe('LogMonitor.vue', () => {
     expect(vm.logListener.unregisterListener).toBeCalledTimes(1);
   })
 
+  it('should call setWrap correctly when onChangeControlButton is called', () => {
+    const wrapper = mount(LogMonitor, {
+      localVue,
+      vuetify,
+    })
+    const vm = wrapper.vm;
+    vm.setWrap = jest.fn();
+    vm.controlButtonStates = [1];
+    vm.onChangeControlButton();
+    expect(vm.setWrap).toBeCalledWith(true);
+
+    vm.setWrap = jest.fn();
+    vm.controlButtonStates = [2];
+    vm.onChangeControlButton();
+    expect(vm.setWrap).toBeCalledWith(false);
+  })
+
+  it('should set autoScroll correctly when onChangeControlButton is called', () => {
+    const wrapper = mount(LogMonitor, {
+      localVue,
+      vuetify,
+    })
+    const vm = wrapper.vm;
+    vm.setWrap = jest.fn();
+    vm.autoScroll = true;
+    vm.controlButtonStates = [1];
+    vm.onChangeControlButton();
+    expect(vm.autoScroll).toEqual(false);
+
+    vm.autoScroll = false;
+    vm.controlButtonStates = [2];
+    vm.onChangeControlButton();
+    expect(vm.autoScroll).toEqual(true);
+  })
+
   it('should create tagRegex instance when onChangeTagRegex is called', () => {
     const wrapper = mount(LogMonitor, {
       localVue,
@@ -83,7 +118,7 @@ describe('LogMonitor.vue', () => {
     expect(viewerMock.setValue).toBeCalledWith("");
   })
 
-  it('should call viewer.scrollToLine with session length when onMessageReceived is called', () => {
+  it('should call viewer.scrollToLine with session length when autoScroll is true', () => {
     const wrapper = mount(LogMonitor, {
       localVue,
       vuetify,
@@ -99,8 +134,30 @@ describe('LogMonitor.vue', () => {
     }
     const vm = wrapper.vm;
     vm.viewer = viewerMock;
+    vm.autoScroll = true;
     vm.onMessageReceived("mango");
     expect(viewerMock.scrollToLine).toBeCalledWith(500);
+  })
+
+  it('should NOT call viewer.scrollToLine with session length when autoScroll is false', () => {
+    const wrapper = mount(LogMonitor, {
+      localVue,
+      vuetify,
+    })
+    const viewerMock = {
+      scrollToLine: jest.fn(),
+      navigateLineEnd: jest.fn(),
+      insert: jest.fn(),
+      session: {
+        getLength: jest.fn().mockReturnValue(500),
+        insert: jest.fn()
+      }
+    }
+    const vm = wrapper.vm;
+    vm.viewer = viewerMock;
+    vm.autoScroll = false;
+    vm.onMessageReceived("mango");
+    expect(viewerMock.scrollToLine).not.toBeCalledWith(500);
   })
 
   it('should NOT call viewer.scrollToLine with session length when onMessageReceived is called with null', () => {
@@ -121,6 +178,26 @@ describe('LogMonitor.vue', () => {
     vm.viewer = viewerMock;
     vm.onMessageReceived();
     expect(viewerMock.scrollToLine).not.toBeCalled();
+  })
+
+  it('should call viewer.session.setUseWrapMode correctly when setWrap is called', () => {
+    const wrapper = mount(LogMonitor, {
+      localVue,
+      vuetify,
+    })
+    const viewerMock = {
+      session: {
+        setUseWrapMode: jest.fn()
+      }
+    }
+    const vm = wrapper.vm;
+    vm.viewer = viewerMock;
+    vm.setWrap(true);
+    expect(viewerMock.session.setUseWrapMode).toBeCalledWith(true);
+
+    viewerMock.session.setUseWrapMode = jest.fn();
+    vm.setWrap(false);
+    expect(viewerMock.session.setUseWrapMode).toBeCalledWith(false);
   })
 
   it('should call viewer.session.insert when onMessageReceived is called, filterLogLevel return true', () => {
