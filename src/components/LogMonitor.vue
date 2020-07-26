@@ -230,8 +230,11 @@ export default {
         })
         .filter(line => line.show)
         .map(line => {
-          this.viewer.navigateLineEnd();
-          this.viewer.insert(line.line);
+          let session = this.viewer.session;
+          session.insert({
+            row: session.getLength(),
+            column: 0
+          }, line.line);
           return line;
         });
 

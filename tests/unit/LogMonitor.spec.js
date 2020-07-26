@@ -93,7 +93,8 @@ describe('LogMonitor.vue', () => {
       navigateLineEnd: jest.fn(),
       insert: jest.fn(),
       session: {
-        getLength: jest.fn().mockReturnValue(500)
+        getLength: jest.fn().mockReturnValue(500),
+        insert: jest.fn()
       }
     }
     const vm = wrapper.vm;
@@ -112,7 +113,8 @@ describe('LogMonitor.vue', () => {
       navigateLineEnd: jest.fn(),
       insert: jest.fn(),
       session: {
-        getLength: jest.fn().mockReturnValue(500)
+        getLength: jest.fn().mockReturnValue(500),
+        insert: jest.fn()
       }
     }
     const vm = wrapper.vm;
@@ -121,7 +123,7 @@ describe('LogMonitor.vue', () => {
     expect(viewerMock.scrollToLine).not.toBeCalled();
   })
 
-  it('should call viewer.navigateLineEnd when onMessageReceived is called', () => {
+  it('should call viewer.session.insert when onMessageReceived is called, filterLogLevel return true', () => {
     const wrapper = mount(LogMonitor, {
       localVue,
       vuetify,
@@ -129,35 +131,19 @@ describe('LogMonitor.vue', () => {
     const viewerMock = {
       scrollToLine: jest.fn(),
       navigateLineEnd: jest.fn(),
-      insert: jest.fn(),
       session: {
-        getLength: jest.fn().mockReturnValue(500)
-      }
-    }
-    const vm = wrapper.vm;
-    vm.viewer = viewerMock;
-    vm.onMessageReceived("mango");
-    expect(viewerMock.navigateLineEnd).toBeCalled();
-  })
-
-  it('should call viewer.insert when onMessageReceived is called, filterLogLevel return true', () => {
-    const wrapper = mount(LogMonitor, {
-      localVue,
-      vuetify,
-    })
-    const viewerMock = {
-      scrollToLine: jest.fn(),
-      navigateLineEnd: jest.fn(),
-      insert: jest.fn(),
-      session: {
-        getLength: jest.fn().mockReturnValue(500)
+        getLength: jest.fn().mockReturnValue(500),
+        insert: jest.fn()
       }
     }
     const vm = wrapper.vm;
     vm.viewer = viewerMock;
     vm.filterLogLevel = jest.fn().mockReturnValue(true);
     vm.onMessageReceived("mango");
-    expect(viewerMock.insert).toBeCalledWith("mango");
+    let calledOption = viewerMock.session.insert.mock.calls[0][0];
+    expect(viewerMock.session.insert).toBeCalledWith(expect.any(Object), "mango");
+    expect(calledOption.row).toEqual(500);
+    expect(calledOption.column).toEqual(0);
   })
 
   it('should call viewer.insert when onMessageReceived is called with multi-line, filterLogLevel return true', () => {
@@ -168,8 +154,8 @@ describe('LogMonitor.vue', () => {
     const viewerMock = {
       scrollToLine: jest.fn(),
       navigateLineEnd: jest.fn(),
-      insert: jest.fn(),
       session: {
+        insert: jest.fn(),
         getLength: jest.fn().mockReturnValue(500)
       }
     }
@@ -177,7 +163,10 @@ describe('LogMonitor.vue', () => {
     vm.viewer = viewerMock;
     vm.filterLogLevel = jest.fn().mockReturnValue(true);
     vm.onMessageReceived("mango\r\norange");
-    expect(viewerMock.insert).toHaveBeenCalledTimes(2);
+    let calledOption = viewerMock.session.insert.mock.calls[0][0];
+    expect(viewerMock.session.insert).toHaveBeenCalledTimes(2);
+    expect(calledOption.row).toEqual(500);
+    expect(calledOption.column).toEqual(0);
   })
 
   it('should NOT call viewer.insert when onMessageReceived is called, filterLogLevel return false', () => {
