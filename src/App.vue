@@ -8,6 +8,16 @@
 
       <v-spacer></v-spacer>
 
+      <v-btn icon class="mx-1"
+        @click="onFontDownButtonClick()">
+        <v-icon>mdi-format-font-size-decrease</v-icon>
+      </v-btn>
+
+      <v-btn icon class="mx-1"
+        @click="onFontUpButtonClick()">
+        <v-icon>mdi-format-font-size-increase</v-icon>
+      </v-btn>
+
       <v-btn icon class="mx-1">
         <v-icon>mdi-cog</v-icon>
       </v-btn>
@@ -54,6 +64,7 @@
             listenerId="listener-0"
             tabName="MAIN"
             isMain="true"
+            v-bind:fontSize="fontSize"
           />
         </v-tab-item>
 
@@ -63,6 +74,7 @@
             v-bind:listenerId="'listener-' + tab.id"
             v-bind:tabName.sync="tab.name"
             isMain="false"
+            v-bind:fontSize="fontSize"
           />
         </v-tab-item>
       </v-tabs-items>
@@ -82,6 +94,9 @@ export default {
     LogMonitor,
   },
   data: () => ({
+    fontSize: 15,
+    fontSizeList: [13, 15, 17, 19, 21],
+    fontSizeIndex: 1,
     increamentalId: 0,
     tabs: [],
     currentItem: 'tab-main',
@@ -90,6 +105,18 @@ export default {
   methods: {
     getNewTabId: function () {
       return this.increamentalId++;
+    },
+    onFontUpButtonClick: function () {
+      if (this.fontSizeIndex + 1 < this.fontSizeList.length) {
+        this.fontSizeIndex++;
+        this.fontSize = this.fontSizeList[this.fontSizeIndex];
+      }
+    },
+    onFontDownButtonClick: function () {
+      if (this.fontSizeIndex - 1 >= 0) {
+        this.fontSizeIndex--;
+        this.fontSize = this.fontSizeList[this.fontSizeIndex];
+      }
     },
     onSwitchChange: function () {
       let command = '';

@@ -42,4 +42,38 @@ describe('App.vue', () => {
     expect(vm.tabs[0]).toEqual("banana");
   })
 
+  it('should set correct fontSize when onFontUpButtonClick is called', () => {
+    const vm = shallowMount(App).vm;
+    vm.fontSizeIndex = 1;
+    vm.fontSize = vm.fontSizeList[vm.fontSizeIndex];
+    vm.onFontUpButtonClick();
+
+    expect(vm.fontSizeIndex).toEqual(2);
+    expect(vm.fontSize).toEqual(vm.fontSizeList[2]);
+
+    vm.fontSizeIndex = vm.fontSizeList.length - 1;
+    vm.fontSize = vm.fontSizeList[vm.fontSizeIndex];
+    vm.onFontUpButtonClick();
+
+    expect(vm.fontSizeIndex).toEqual(vm.fontSizeList.length - 1);
+    expect(vm.fontSize).toEqual(vm.fontSizeList[vm.fontSizeList.length - 1]);
+  })
+
+  it('should set correct fontSize when onFontDownButtonClick is called', () => {
+    const vm = shallowMount(App).vm;
+    vm.fontSizeIndex = 1;
+    vm.fontSize = vm.fontSizeList[vm.fontSizeIndex];
+    vm.onFontDownButtonClick();
+
+    expect(vm.fontSizeIndex).toEqual(0);
+    expect(vm.fontSize).toEqual(vm.fontSizeList[0]);
+
+    vm.fontSizeIndex = 0;
+    vm.fontSize = vm.fontSizeList[vm.fontSizeIndex];
+    vm.onFontDownButtonClick();
+
+    expect(vm.fontSizeIndex).toEqual(0);
+    expect(vm.fontSize).toEqual(vm.fontSizeList[0]);
+  })
+
 })

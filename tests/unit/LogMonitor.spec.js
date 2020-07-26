@@ -104,7 +104,7 @@ describe('LogMonitor.vue', () => {
     expect(vm.messageRegex).not.toEqual(null);
   })
 
-  it('should call viewer.setValue with "" when onClearClicked is called', () => {
+  it('should call viewer.setValue with "" when onClearClick is called', () => {
     const wrapper = mount(LogMonitor, {
       localVue,
       vuetify,
@@ -114,7 +114,7 @@ describe('LogMonitor.vue', () => {
     }
     const vm = wrapper.vm;
     vm.viewer = viewerMock;
-    vm.onClearClicked();
+    vm.onClearClick();
     expect(viewerMock.setValue).toBeCalledWith("");
   })
 
@@ -287,7 +287,7 @@ describe('LogMonitor.vue', () => {
     expect(window.addEventListener).toBeCalledWith('resize', vm.handleResize);
   })
 
-  it('should set dialogForTag false when onNameCloseClicked is called', () => {
+  it('should set dialogForTag false when onNameCloseClick is called', () => {
     const app = document.createElement('div');
     app.setAttribute('data-app', true);
     document.body.append(app);
@@ -299,11 +299,11 @@ describe('LogMonitor.vue', () => {
     const vm = wrapper.vm;
     vm.dialogForTag = true;
 
-    vm.onNameCloseClicked();
+    vm.onNameCloseClick();
     expect(vm.dialogForTag).toEqual(false);
   })
 
-  it('should set newTabName with tabName when onNameCloseClicked is called', () => {
+  it('should set newTabName with tabName when onNameCloseClick is called', () => {
     const app = document.createElement('div');
     app.setAttribute('data-app', true);
     document.body.append(app);
@@ -318,11 +318,11 @@ describe('LogMonitor.vue', () => {
     const vm = wrapper.vm;
     vm.newTabName = 'mango';
 
-    vm.onNameCloseClicked();
+    vm.onNameCloseClick();
     expect(vm.newTabName).toEqual("banana");
   })
 
-  it('should set dialogForTag false when onNameSaveClicked is called', () => {
+  it('should set dialogForTag false when onNameSaveClick is called', () => {
     const app = document.createElement('div');
     app.setAttribute('data-app', true);
     document.body.append(app);
@@ -334,11 +334,11 @@ describe('LogMonitor.vue', () => {
     const vm = wrapper.vm;
     vm.dialogForTag = true;
 
-    vm.onNameSaveClicked();
+    vm.onNameSaveClick();
     expect(vm.dialogForTag).toEqual(false);
   })
 
-  it('should call $emit with "update:tabName" and newTabName when onNameSaveClicked is called', () => {
+  it('should call $emit with "update:tabName" and newTabName when onNameSaveClick is called', () => {
     const app = document.createElement('div');
     app.setAttribute('data-app', true);
     document.body.append(app);
@@ -351,7 +351,7 @@ describe('LogMonitor.vue', () => {
     vm.newTabName = "mango";
     vm.$emit = jest.fn();
 
-    vm.onNameSaveClicked();
+    vm.onNameSaveClick();
     expect(vm.$emit).toHaveBeenCalledWith('update:tabName', 'mango');
   })
 

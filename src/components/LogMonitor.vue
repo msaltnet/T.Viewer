@@ -66,7 +66,7 @@
       <v-divider class="mx-3" inset vertical></v-divider>
 
       <v-btn icon class="mx-1"
-        @click="onClearClicked()">
+        @click="onClearClick()">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
 
@@ -143,14 +143,14 @@
           <v-btn
             color="primary"
             text
-            @click="onNameCloseClicked()"
+            @click="onNameCloseClick()"
           >
             Close
           </v-btn>
           <v-btn
             color="primary"
             text
-            @click="onNameSaveClicked()"
+            @click="onNameSaveClick()"
           >
             Save
           </v-btn>
@@ -227,16 +227,16 @@ export default {
       if (this.messageRegexSetting)
         this.messageRegex = new RegExp(this.messageFilter, 'u');
     },
-    onNameCloseClicked: function () {
+    onNameCloseClick: function () {
       this.newTabName = this.tabName;
       this.dialogForTag = false;
     },
-    onNameSaveClicked: function () {
+    onNameSaveClick: function () {
       let str = this.newTabName;
       this.$emit('update:tabName', str);
       this.dialogForTag = false;
     },
-    onClearClicked: function () {
+    onClearClick: function () {
       this.viewer.setValue('');
     },
     onLevelClicked: function (selectedLevel) {
