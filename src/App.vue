@@ -95,7 +95,7 @@ export default {
   },
   data: () => ({
     fontSize: 15,
-    fontSizeList: [13, 15, 17, 19, 21],
+    fontSizeList: [13, 15, 17, 19, 21, 23],
     fontSizeIndex: 1,
     increamentalId: 0,
     tabs: [],

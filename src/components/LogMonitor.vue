@@ -167,7 +167,7 @@ import LogListener from '../LogListener';
 import GlobalSettings from '../globalSettings';
 import { ipcRenderer } from 'electron';
 export default {
-  props: ['listenSwitch', 'listenerId', 'tabName', 'isMain'],
+  props: ['listenSwitch', 'listenerId', 'tabName', 'isMain', 'fontSize'],
   data: function () {
     return {
       controlButtonStates: [2],
@@ -196,6 +196,11 @@ export default {
     },
     getMessageFilter: function() {
       return this.messageFilter == '' ? '-' : this.messageFilter;
+    }
+  },
+  watch: {
+    fontSize: function(fontSize) {
+      this.viewer.setFontSize(fontSize + "px");
     }
   },
   created: function() {

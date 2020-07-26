@@ -104,6 +104,20 @@ describe('LogMonitor.vue', () => {
     expect(vm.messageRegex).not.toEqual(null);
   })
 
+  it('should viewer.setFontSize with new fontSize when fontSize is changed', () => {
+    const wrapper = mount(LogMonitor, {
+      localVue,
+      vuetify,
+    })
+    const viewerMock = {
+      setFontSize: jest.fn()
+    }
+    const vm = wrapper.vm;
+    vm.viewer = viewerMock;
+    vm.$options.watch.fontSize.call(vm, 100)
+    expect(vm.viewer.setFontSize).toBeCalledWith('100px');
+  })
+
   it('should call viewer.setValue with "" when onClearClick is called', () => {
     const wrapper = mount(LogMonitor, {
       localVue,
