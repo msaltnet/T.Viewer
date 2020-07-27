@@ -28,7 +28,7 @@ Cross Platform Tizen Log Viewer T.Viewer를 소개합니다. 타이젠의 `dlog`
 - [등록 요청된 코드](https://github.com/msaltnet/T.Viewer/pulls)을 코드 리뷰해 주셔도 됩니다.
 
 직접 코드를 수정하시고 싶으시다면, 아래 가이드를 참고해주세요.
-- [Buildand Run](https://github.com/msaltnet/T.Viewer/wiki/Build-and-Run)
+- [빌드하기](https://github.com/msaltnet/T.Viewer/wiki/%EB%B9%8C%EB%93%9C%ED%95%98%EA%B8%B0)
 
 ## 라이센스
 본 프로젝트는 [MIT 라이센스](https://github.com/msaltnet/T.Viewer/blob/master/LICENSE)의 오픈소스 프로젝트 입니다.
@@ -55,7 +55,7 @@ There are many ways in which you can participate in the project, for example:
 - Review [source code changes]((https://github.com/msaltnet/T.Viewer/pulls))
 
 If you are interested in fixing issues and contributing directly to the code base, please see the following:
-- [Buildand Run](https://github.com/msaltnet/T.Viewer/wiki/Build-and-Run)
+- [Build and Run](https://github.com/msaltnet/T.Viewer/wiki/Build-and-Run)
 
 ## License
 Licensed under the MIT license.
