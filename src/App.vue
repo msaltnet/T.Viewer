@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app>
+    <v-app-bar app min-width=400>
 
       <v-toolbar-title class="headline">
         <span class="font-weight-light">T.Viewer</span>
