@@ -17,6 +17,7 @@ module.exports = {
               ],
             },
           ],
+          icon: 'assets/icons/icon.ico'
         },
         linux: {
           target: [
@@ -27,6 +28,7 @@ module.exports = {
               ],
             },
           ],
+          icon: 'assets/icons/icon.png'
         },
       },
     },

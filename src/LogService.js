@@ -1,6 +1,6 @@
 import { webContents } from 'electron';
 
-export default class {
+export default class LogService {
     constructor (ipcMain, sdbManager) {
         this.ipcMain = ipcMain;
         this.LISTEN_REQUEST_CHANNEL = "register-listener";

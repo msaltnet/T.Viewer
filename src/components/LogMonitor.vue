@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-toolbar color="grey lighten-5 elevation-0" :height="toolbarHeight">
-      <v-tooltip bottom>
+      <v-tooltip bottom v-if="isMain != 'true'">
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon class="mx-1"
             v-bind="attrs"
@@ -14,51 +14,79 @@
         <span>Message: {{ getMessageFilter }}</span>
       </v-tooltip>
 
-      <v-divider class="mx-3" inset vertical></v-divider>
+      <v-divider class="mx-3" inset vertical v-if="isMain != 'true'"></v-divider>
       <v-flex xs4>
-
-      <v-menu
-        :offset-y="true"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            x-small
-            min-width="120"
-            color="blue-grey lighten-3"
-            v-bind="attrs"
-            v-on="on"
-          >
-            {{ logLevelsSelected }}
-          </v-btn>
-        </template>
-        <v-list dense>
-          <v-list-item
-            v-for="(item, index) in logLevels"
-            :key="index"
-            @click="onLevelClicked(item)"
-          >
-            <v-list-item-title>{{ item }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-
+        <v-menu
+          :offset-y="true"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              x-small
+              min-width="120"
+              color="blue-grey lighten-3"
+              v-bind="attrs"
+              v-on="on"
+            >
+              {{ logLevelsSelected }}
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item
+              v-for="(item, index) in logLevels"
+              :key="index"
+              @click="onLevelClicked(item)"
+            >
+              <v-list-item-title>{{ item }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-flex>
+
       <v-spacer></v-spacer>
 
       <v-divider class="mx-3" inset vertical></v-divider>
 
-      <v-btn icon class="mx-1">
-        <v-icon>mdi-cog</v-icon>
+      <v-btn-toggle
+        v-model="controlButtonStates"
+        color="primary"
+        dense
+        group
+        multiple
+        v-on:change="onChangeControlButton()"
+      >
+        <v-btn :value="1" text>
+          <v-icon>mdi-wrap</v-icon>
+        </v-btn>
+
+        <v-btn :value="2" text>
+          <v-icon>mdi-format-align-bottom</v-icon>
+        </v-btn>
+      </v-btn-toggle>
+
+      <v-divider class="mx-3" inset vertical></v-divider>
+
+      <v-btn icon class="mx-1"
+        @click="onClearClick()">
+        <v-icon>mdi-delete</v-icon>
+      </v-btn>
+
+      <v-btn icon class="mx-1"
+        @click="dialogForTag = !dialogForTag"
+        v-if="isMain != 'true'"
+      >
+        <v-icon>mdi-tag</v-icon>
       </v-btn>
 
       <v-switch
         dense
         hide-details
+        color="indigo"
         v-model="isListenerOn"
+        prepend-icon="mdi-download"
         v-on:change="onSwitchChanged"
         class="mx-1"
-        :label="'Listen'"
       ></v-switch>
+
     </v-toolbar>
 
     <div ref="viewer" :style="{'height': editorHeight + 'px'}"></div>
@@ -78,8 +106,9 @@
               </v-col>
               <v-col cols="3">
                 <v-checkbox
-                  v-model="tagRegex"
+                  v-model="tagRegexSetting"
                   label="regex"
+                  v-on:change="onChangeTagRegex()"
                 ></v-checkbox>
               </v-col>
               <v-col cols="9">
@@ -87,8 +116,9 @@
               </v-col>
               <v-col cols="3">
                 <v-checkbox
-                  v-model="messageRegex"
+                  v-model="messageRegexSetting"
                   label="regex"
+                  v-on:change="onChangeMessageRegex()"
                 ></v-checkbox>
               </v-col>
             </v-row>
@@ -96,25 +126,64 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+
+    <v-dialog
+      v-model="dialogForTag"
+      persistent
+      max-width="500px"
+    >
+      <v-card>
+        <v-card-title>
+          Tab Name
+        </v-card-title>
+        <v-card-text>
+          <v-text-field v-model="newTabName"></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            text
+            @click="onNameCloseClick()"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            color="primary"
+            text
+            @click="onNameSaveClick()"
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </div>
 </template>
 
 <script>
-import AceEditor from '../aceEditor';
+import AceEditor from '../AceEditor';
 import LogListener from '../LogListener';
 import GlobalSettings from '../globalSettings';
 import { ipcRenderer } from 'electron';
 export default {
-  props: ['listenSwitch', 'listenerId', 'filter', 'tabName'],
+  props: ['listenSwitch', 'listenerId', 'tabName', 'isMain', 'fontSize'],
   data: function () {
     return {
+      controlButtonStates: [2],
+      autoScroll: true,
       dialog: false,
+      dialogForTag: false,
+      newTabName: '',
       toolbarHeight: 40,
       isListenerOn: false,
       tagFilter: '',
       messageFilter: '',
-      tagRegex: false,
-      messageRegex: false,
+      tagRegexSetting: false,
+      tagRegex: null,
+      messageRegexSetting: false,
+      messageRegex: null,
       logLevels: ["Verbose", "Debug", "Info", "Warning", "Error", "Fatal"],
       logLevelChars: ["V", "D", "I", "W", "E", "F"],
       logLevelsSelected: "Verbose", //TO DO load from settings
@@ -130,15 +199,52 @@ export default {
       return this.messageFilter == '' ? '-' : this.messageFilter;
     }
   },
+  watch: {
+    fontSize: function(fontSize) {
+      this.viewer.setFontSize(fontSize + "px");
+    }
+  },
   created: function() {
     this.logListener = new LogListener(ipcRenderer);
-    AceEditor.init(this.globalSettings);
+    AceEditor.init();
+    this.newTabName = this.tabName;
   },
   mounted: function() {
     this.viewer = AceEditor.createViewer(this.$refs.viewer, this.globalSettings);
     window.addEventListener('resize', this.handleResize);
   },
   methods: {
+    onChangeControlButton: function () {
+      if (this.controlButtonStates.indexOf(1) != -1)
+        this.setWrap(true);
+      else
+        this.setWrap(false);
+
+      if (this.controlButtonStates.indexOf(2) != -1)
+        this.autoScroll = true;
+      else
+        this.autoScroll = false;
+    },
+    onChangeTagRegex: function () {
+      if (this.tagRegexSetting)
+        this.tagRegex = new RegExp(this.tagFilter, 'u');
+    },
+    onChangeMessageRegex: function () {
+      if (this.messageRegexSetting)
+        this.messageRegex = new RegExp(this.messageFilter, 'u');
+    },
+    onNameCloseClick: function () {
+      this.newTabName = this.tabName;
+      this.dialogForTag = false;
+    },
+    onNameSaveClick: function () {
+      let str = this.newTabName;
+      this.$emit('update:tabName', str);
+      this.dialogForTag = false;
+    },
+    onClearClick: function () {
+      this.viewer.setValue('');
+    },
     onLevelClicked: function (selectedLevel) {
       this.logLevelsSelected = selectedLevel;
     },
@@ -162,15 +268,22 @@ export default {
         })
         .filter(line => line.show)
         .map(line => {
-          this.viewer.navigateLineEnd();
-          this.viewer.insert(line.line);
+          let session = this.viewer.session;
+          session.insert({
+            row: session.getLength(),
+            column: 0
+          }, line.line);
           return line;
         });
 
-        this.viewer.scrollToLine(this.viewer.session.getLength());
+        if (this.autoScroll)
+          this.viewer.scrollToLine(this.viewer.session.getLength());
       } catch {
         console.log("Invaild log text is received!");
       }
+    },
+    setWrap: function (on) {
+      this.viewer.session.setUseWrapMode(on);
     },
     handleResize() {
       this.editorHeight = this.getEditorHeight();
@@ -209,14 +322,20 @@ export default {
       let tagEndIndex = line.indexOf('(');
       let tag = line.substring(LOG_LEVEL_CHAR_START_POSITION, tagEndIndex);
       tag = tag.replace(/\s/g, '');
-      return tag === this.tagFilter;
+      if (!this.tagRegexSetting)
+        return tag === this.tagFilter;
+
+      return this.tagRegex.test(tag);
     },
     // 07-10 14:51:21.337+0900 I/RESOURCED( 2617): heart-battery.c:....
     filterMessage: function (line) {
       if (this.messageFilter == '')
         return true;
 
-      return -1 != line.indexOf(this.messageFilter);
+      if (!this.messageRegexSetting)
+        return -1 != line.indexOf(this.messageFilter);
+
+      return this.messageRegex.test(line);
     },
   }
 }

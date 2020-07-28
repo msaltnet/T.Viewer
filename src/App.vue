@@ -1,12 +1,22 @@
 <template>
   <v-app>
-    <v-app-bar app>
+    <v-app-bar app min-width=400>
 
       <v-toolbar-title class="headline">
         <span class="font-weight-light">T.Viewer</span>
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
+
+      <v-btn icon class="mx-1"
+        @click="onFontDownButtonClick()">
+        <v-icon>mdi-format-font-size-decrease</v-icon>
+      </v-btn>
+
+      <v-btn icon class="mx-1"
+        @click="onFontUpButtonClick()">
+        <v-icon>mdi-format-font-size-increase</v-icon>
+      </v-btn>
 
       <v-btn icon class="mx-1">
         <v-icon>mdi-cog</v-icon>
@@ -15,10 +25,11 @@
       <v-switch
         dense
         hide-details
+        color="red"
         v-model="switchListen"
         v-on:change="onSwitchChange"
+        prepend-icon="mdi-power"
         class="mx-1"
-        :label="'Power'"
       ></v-switch>
     </v-app-bar>
 
@@ -30,7 +41,7 @@
       >
         <v-tab
           :href="'#tab-main'"
-        >Main</v-tab>
+        >MAIN</v-tab>
 
         <v-tab v-for="(tab, i) in tabs" :key="tab.id" :title="tab.name" :href="'#tab' + tab.id">
           {{ tab.name }}
@@ -51,7 +62,9 @@
           <LogMonitor
             v-bind:listenSwitch="switchListen"
             listenerId="listener-0"
-            filter=''
+            tabName="MAIN"
+            isMain="true"
+            v-bind:fontSize="fontSize"
           />
         </v-tab-item>
 
@@ -59,7 +72,9 @@
           <LogMonitor
             v-bind:listenSwitch="switchListen"
             v-bind:listenerId="'listener-' + tab.id"
-            filter=""
+            v-bind:tabName.sync="tab.name"
+            isMain="false"
+            v-bind:fontSize="fontSize"
           />
         </v-tab-item>
       </v-tabs-items>
@@ -79,6 +94,9 @@ export default {
     LogMonitor,
   },
   data: () => ({
+    fontSize: 15,
+    fontSizeList: [13, 15, 17, 19, 21, 23],
+    fontSizeIndex: 1,
     increamentalId: 0,
     tabs: [],
     currentItem: 'tab-main',
@@ -87,6 +105,18 @@ export default {
   methods: {
     getNewTabId: function () {
       return this.increamentalId++;
+    },
+    onFontUpButtonClick: function () {
+      if (this.fontSizeIndex + 1 < this.fontSizeList.length) {
+        this.fontSizeIndex++;
+        this.fontSize = this.fontSizeList[this.fontSizeIndex];
+      }
+    },
+    onFontDownButtonClick: function () {
+      if (this.fontSizeIndex - 1 >= 0) {
+        this.fontSizeIndex--;
+        this.fontSize = this.fontSizeList[this.fontSizeIndex];
+      }
     },
     onSwitchChange: function () {
       let command = '';
