@@ -83,6 +83,8 @@
 
       <Settings
         v-bind:settingShow.sync="settingShow"
+        :sdbClearStart.sync="sdbClearStart"
+        :sdbTimestamp.sync="sdbTimestamp"
         @restart="restartForSetting"
       />
     </v-content>
@@ -103,6 +105,8 @@ export default {
   },
   data: () => ({
     settingShow: false,
+    sdbClearStart: false,
+    sdbTimestamp: false,
     fontSize: 15,
     fontSizeList: [13, 15, 17, 19, 21, 23],
     fontSizeIndex: 1,

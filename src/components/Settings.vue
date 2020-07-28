@@ -47,7 +47,7 @@
           <v-btn
             color="primary"
             text
-            @click="onCloseClick()"
+            @click="closeAll()"
           >
             Close
           </v-btn>
@@ -89,7 +89,7 @@ const SAMPLE_LOG = 'D/RESOURCED( 2617): heart-battery.c';
 const SAMPLE_SDB_CMD_WITH_CLEAR = '$sdb dlog -c && sdb dlog';
 const SAMPLE_SDB_CMD = '$sdb dlog';
 export default {
-  props: ['settingShow'],
+  props: ['settingShow', 'sdbClearStart', 'sdbTimestamp'],
   data: function () {
     return {
       confirmDialog: false,
@@ -102,12 +102,23 @@ export default {
   computed: {
   },
   watch: {
+    sdbTimestamp: function (newValue) {
+      this.timestamp = newValue;
+    },
+    sdbClearStart: function (newValue) {
+      this.sdbClear = newValue;
+    }
   },
   created: function () {
+    this.syncInitValue();
   },
   mounted: function () {
   },
   methods: {
+    syncInitValue: function () {
+      this.timestamp = this.sdbTimestamp;
+      this.sdbClear = this.sdbClearStart;
+    },
     onChangeTimestampOption: function () {
       this.sampleLogMessage = this.timestamp ? SAMPLE_LOG_WITH_TIMESTAMP : SAMPLE_LOG;
     },
@@ -115,11 +126,14 @@ export default {
       this.sampleSdbCommand = this.sdbClear ? SAMPLE_SDB_CMD_WITH_CLEAR : SAMPLE_SDB_CMD;
     },
     onOkClick: function () {
+      this.$emit('update:sdbTimestamp', this.timestamp);
+      this.$emit('update:sdbClearStart', this.sdbClear);
       this.closeAll();
       this.$emit('restart', true);
     },
     closeAll: function () {
       this.confirmDialog = false
+      this.syncInitValue();
       this.$emit('update:settingShow', false);
     }
   }
