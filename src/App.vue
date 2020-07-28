@@ -62,7 +62,6 @@
         <v-tab-item
           :value="'tab-main'">
           <LogMonitor
-            v-bind:listenSwitch="switchListen"
             listenerId="listener-0"
             tabName="MAIN"
             isMain="true"
@@ -72,7 +71,6 @@
 
         <v-tab-item v-for="tab in tabs" :key="tab.id" :value="'tab' + tab.id" >
           <LogMonitor
-            v-bind:listenSwitch="switchListen"
             v-bind:listenerId="'listener-' + tab.id"
             v-bind:tabName.sync="tab.name"
             isMain="false"

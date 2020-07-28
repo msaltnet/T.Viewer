@@ -168,7 +168,7 @@ import LogListener from '../LogListener';
 import GlobalSettings from '../globalSettings';
 import { ipcRenderer } from 'electron';
 export default {
-  props: ['listenSwitch', 'listenerId', 'tabName', 'isMain', 'fontSize'],
+  props: ['listenerId', 'tabName', 'isMain', 'fontSize'],
   data: function () {
     return {
       controlButtonStates: [2],
