@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-toolbar color="grey lighten-5 elevation-0" :height="toolbarHeight">
-      <v-tooltip bottom>
+      <v-tooltip bottom v-if="isMain != 'true'">
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon class="mx-1"
             v-bind="attrs"
@@ -14,7 +14,7 @@
         <span>Message: {{ getMessageFilter }}</span>
       </v-tooltip>
 
-      <v-divider class="mx-3" inset vertical></v-divider>
+      <v-divider class="mx-3" inset vertical v-if="isMain != 'true'"></v-divider>
       <v-flex xs4>
         <v-menu
           :offset-y="true"
@@ -72,6 +72,7 @@
 
       <v-btn icon class="mx-1"
         @click="dialogForTag = !dialogForTag"
+        v-if="isMain != 'true'"
       >
         <v-icon>mdi-tag</v-icon>
       </v-btn>
