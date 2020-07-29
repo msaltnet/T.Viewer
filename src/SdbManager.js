@@ -3,8 +3,8 @@ export default class SdbManager {
         this.isRunning = false;
         this.const = {
             MAIN_COMMAND : 'sdb',
-            SDB_DLOG_COMMAND: ['dlog', '-v', 'time'],
-            SDB_DLOG_CLEAR_COMMAND: ['dlog', '-c'],
+            SDB_DLOG_START_COMMAND: ['shell', 'dlogutil -v time'],
+            SDB_DLOG_CLEAR_START_COMMAND: ['shell', 'dlogutil -c && dlogutil -v time'],
             LISTEN_EVENT: 'data',
             CLOSE_EVENT: 'close',
         };
@@ -33,21 +33,16 @@ export default class SdbManager {
         this.spawn = spawn;
     }
 
-    startDlog(){
+    startDlog(afterClear){
         if (this.isRunning)
             return;
         console.log('Dlog Start!');
-        this.sdb = this.spawn(this.const.MAIN_COMMAND, this.const.SDB_DLOG_COMMAND, this.spawnOption);
+        let command = afterClear ? this.const.SDB_DLOG_CLEAR_START_COMMAND : this.const.SDB_DLOG_START_COMMAND;
+        this.sdb = this.spawn(this.const.MAIN_COMMAND, command, this.spawnOption);
         this.isRunning = true;
 
         this.sdb.stdout.on(this.const.LISTEN_EVENT, this.onStdout.bind(this));
         this.sdb.stderr.on(this.const.LISTEN_EVENT, this.onErrorEvent.bind(this));
-        this.sdb.on(this.const.CLOSE_EVENT, this.onTerminatedEvent.bind(this));
-    }
-
-    clearDlog(){
-        console.log('Dlog Clear!');
-        this.sdb = this.spawn(this.const.MAIN_COMMAND, this.const.SDB_DLOG_CLEAR_COMMAND, this.spawnOption);
         this.sdb.on(this.const.CLOSE_EVENT, this.onTerminatedEvent.bind(this));
     }
 
@@ -74,7 +69,7 @@ export default class SdbManager {
 
     onStdout(data) {
         this._listener(data);
-        console.log(`stdout: ${data}`);
+        // console.log(`stdout: ${data}`);
     }
 
     onTerminatedEvent(code) {

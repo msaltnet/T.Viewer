@@ -132,7 +132,7 @@ export default {
     onSwitchChange: function () {
       let command = '';
       if (this.switchListen)
-        command = 'start';
+        command = this.sdbClearStart ? 'clearStart' : 'start';
 
       ipcRenderer.send(POWER_EVENT_CHANNEL, command);
     },
