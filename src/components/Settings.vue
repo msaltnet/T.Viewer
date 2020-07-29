@@ -69,7 +69,7 @@
         <v-card-text>
           <v-container>
             <v-row>
-            It is necessary to restart the application to apply changes
+            It is necessary to turn off dlog. All changes will take effect after restart.
             </v-row>
           </v-container>
         </v-card-text>

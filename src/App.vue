@@ -66,6 +66,7 @@
             tabName="MAIN"
             isMain="true"
             v-bind:fontSize="fontSize"
+            v-bind:timestamp="sdbTimestamp"
           />
         </v-tab-item>
 
@@ -75,6 +76,7 @@
             v-bind:tabName.sync="tab.name"
             isMain="false"
             v-bind:fontSize="fontSize"
+            v-bind:timestamp="sdbTimestamp"
           />
         </v-tab-item>
       </v-tabs-items>
@@ -131,8 +133,11 @@ export default {
     },
     onSwitchChange: function () {
       let command = '';
-      if (this.switchListen)
-        command = this.sdbClearStart ? 'clearStart' : 'start';
+      if (this.switchListen) {
+        command = this.sdbClearStart ? 'clear' : 'start';
+        if (this.sdbTimestamp)
+          command += '-time';
+      }
 
       ipcRenderer.send(POWER_EVENT_CHANNEL, command);
     },

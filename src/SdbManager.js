@@ -3,8 +3,10 @@ export default class SdbManager {
         this.isRunning = false;
         this.const = {
             MAIN_COMMAND : 'sdb',
-            SDB_DLOG_START_COMMAND: ['shell', 'dlogutil -v time'],
-            SDB_DLOG_CLEAR_START_COMMAND: ['shell', 'dlogutil -c && dlogutil -v time'],
+            SDB_DLOG_START: ['shell', 'dlogutil'],
+            SDB_DLOG_START_WITH_TIMESTAMP: ['shell', 'dlogutil -v time'],
+            SDB_DLOG_CLEAR_START: ['shell', 'dlogutil -c && dlogutil'],
+            SDB_DLOG_CLEAR_START_WITH_TIMESTAMP: ['shell', 'dlogutil -c && dlogutil -v time'],
             LISTEN_EVENT: 'data',
             CLOSE_EVENT: 'close',
         };
@@ -33,11 +35,17 @@ export default class SdbManager {
         this.spawn = spawn;
     }
 
-    startDlog(afterClear){
+    startDlog(afterClear, timestamp){
         if (this.isRunning)
             return;
         console.log('Dlog Start!');
-        let command = afterClear ? this.const.SDB_DLOG_CLEAR_START_COMMAND : this.const.SDB_DLOG_START_COMMAND;
+        let command = '';
+        if (afterClear) {
+            command = timestamp ? this.const.SDB_DLOG_CLEAR_START_WITH_TIMESTAMP : this.const.SDB_DLOG_CLEAR_START;
+        } else {
+            command = timestamp ? this.const.SDB_DLOG_START_WITH_TIMESTAMP : this.const.SDB_DLOG_START;
+        }
+
         this.sdb = this.spawn(this.const.MAIN_COMMAND, command, this.spawnOption);
         this.isRunning = true;
 

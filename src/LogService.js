@@ -38,15 +38,19 @@ export default class LogService {
             return;
         }
 
-        if (arg == 'clearStart')
-            this.setPower(true, true);
+        if (arg == 'clear')
+            this.setPower(true, true, false);
+        else if (arg == 'clear-time')
+            this.setPower(true, true, true);
         else if (arg == 'start')
-            this.setPower(true, false);
+            this.setPower(true, false, false);
+        else if (arg == 'start-time')
+            this.setPower(true, false, true);
         else
             this.setPower(false);
     }
 
-    setPower(on, afterClear) {
+    setPower(on, afterClear, timestamp) {
         if (!this.sdbManager) {
             console.error('Invaild sdbManager');
             return;
@@ -54,7 +58,7 @@ export default class LogService {
 
         console.log('setPower :' + on);
         if (on)
-            this.sdbManager.startDlog(afterClear);
+            this.sdbManager.startDlog(afterClear, timestamp);
         else
             this.sdbManager.stopDlog();
     }

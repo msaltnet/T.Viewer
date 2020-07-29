@@ -167,8 +167,13 @@ import AceEditor from '../AceEditor';
 import LogListener from '../LogListener';
 import GlobalSettings from '../globalSettings';
 import { ipcRenderer } from 'electron';
+
+const LOG_LEVEL_POSITION = 0;
+const LOG_LEVEL_POSITION_WITH_TIMESTAMP = 24;
+const TAG_POSITION = 2;
+const TAG_POSITION_WITH_TIMESTAMP = 26;
 export default {
-  props: ['listenerId', 'tabName', 'isMain', 'fontSize'],
+  props: ['listenerId', 'tabName', 'isMain', 'fontSize', 'timestamp'],
   data: function () {
     return {
       controlButtonStates: [2],
@@ -184,6 +189,8 @@ export default {
       tagRegex: null,
       messageRegexSetting: false,
       messageRegex: null,
+      logLevelPosition: LOG_LEVEL_POSITION_WITH_TIMESTAMP,
+      tagPosition: TAG_POSITION_WITH_TIMESTAMP,
       logLevels: ["Verbose", "Debug", "Info", "Warning", "Error", "Fatal"],
       logLevelChars: ["V", "D", "I", "W", "E", "F"],
       logLevelsSelected: "Verbose", //TO DO load from settings
@@ -200,20 +207,28 @@ export default {
     }
   },
   watch: {
-    fontSize: function(fontSize) {
+    fontSize: function (fontSize) {
       this.viewer.setFontSize(fontSize + "px");
+    },
+    timestamp: function (timestamp) {
+      this.updateTimestamp(timestamp);
     }
   },
   created: function() {
     this.logListener = new LogListener(ipcRenderer);
     AceEditor.init();
     this.newTabName = this.tabName;
+    this.updateTimestamp(this.timestamp);
   },
   mounted: function() {
     this.viewer = AceEditor.createViewer(this.$refs.viewer, this.globalSettings);
     window.addEventListener('resize', this.handleResize);
   },
   methods: {
+    updateTimestamp: function (timestamp) {
+      this.logLevelPosition = timestamp ? LOG_LEVEL_POSITION_WITH_TIMESTAMP : LOG_LEVEL_POSITION;
+      this.tagPosition = timestamp ? TAG_POSITION_WITH_TIMESTAMP : TAG_POSITION;
+    },
     onChangeControlButton: function () {
       if (this.controlButtonStates.indexOf(1) != -1)
         this.setWrap(true);
@@ -294,9 +309,8 @@ export default {
     },
     // 07-10 14:51:21.337+0900 I/RESOURCED( 2617): heart-battery.c:....
     filterLogLevel: function (line) {
-      const LOG_LEVEL_CHAR_START_POSITION = 24;
       let logLevelIndex = this.logLevels.indexOf(this.logLevelsSelected);
-      let logChar = line.substr(LOG_LEVEL_CHAR_START_POSITION,1);
+      let logChar = line.substr(this.logLevelPosition, 1);
 
       if (logLevelIndex == 0 || this.logLevelChars[5] == logChar)
         return true;
@@ -318,9 +332,8 @@ export default {
       if (this.tagFilter == '')
         return true;
 
-      const LOG_LEVEL_CHAR_START_POSITION = 26;
       let tagEndIndex = line.indexOf('(');
-      let tag = line.substring(LOG_LEVEL_CHAR_START_POSITION, tagEndIndex);
+      let tag = line.substring(this.tagPosition, tagEndIndex);
       tag = tag.replace(/\s/g, '');
       if (!this.tagRegexSetting)
         return tag === this.tagFilter;

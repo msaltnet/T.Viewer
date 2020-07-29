@@ -5,7 +5,7 @@ describe('SdbManager', () => {
     })
 
     describe('startDlog', () => {
-        it('should call spawn with correct argument when startDlog called and afterClear is true', () => {
+        it('should call spawn with correct argument when startDlog called and afterClear is true, timestamp is false', () => {
             const mockSpawn = jest.fn().mockReturnValue({
                 stdout: {
                     on: jest.fn()
@@ -17,14 +17,14 @@ describe('SdbManager', () => {
             });
 
             const sdbManager = new SdbManager(mockSpawn);
-            sdbManager.startDlog(true);
+            sdbManager.startDlog(true, false);
             expect(sdbManager.isRunning).toBe(true);
             expect(mockSpawn).toBeCalledWith(sdbManager.const.MAIN_COMMAND,
-                sdbManager.const.SDB_DLOG_CLEAR_START_COMMAND,
+                sdbManager.const.SDB_DLOG_CLEAR_START,
                 sdbManager.spawnOption);
         })
 
-        it('should call spawn with correct argument when startDlog called and afterClear is false', () => {
+        it('should call spawn with correct argument when startDlog called and afterClear is true, timestamp is true', () => {
             const mockSpawn = jest.fn().mockReturnValue({
                 stdout: {
                     on: jest.fn()
@@ -36,10 +36,48 @@ describe('SdbManager', () => {
             });
 
             const sdbManager = new SdbManager(mockSpawn);
-            sdbManager.startDlog(false);
+            sdbManager.startDlog(true, true);
             expect(sdbManager.isRunning).toBe(true);
             expect(mockSpawn).toBeCalledWith(sdbManager.const.MAIN_COMMAND,
-                sdbManager.const.SDB_DLOG_START_COMMAND,
+                sdbManager.const.SDB_DLOG_CLEAR_START_WITH_TIMESTAMP,
+                sdbManager.spawnOption);
+        })
+
+        it('should call spawn with correct argument when startDlog called and afterClear is false, timestamp is false', () => {
+            const mockSpawn = jest.fn().mockReturnValue({
+                stdout: {
+                    on: jest.fn()
+                },
+                stderr: {
+                    on: jest.fn()
+                },
+                on: jest.fn()
+            });
+
+            const sdbManager = new SdbManager(mockSpawn);
+            sdbManager.startDlog(false, false);
+            expect(sdbManager.isRunning).toBe(true);
+            expect(mockSpawn).toBeCalledWith(sdbManager.const.MAIN_COMMAND,
+                sdbManager.const.SDB_DLOG_START,
+                sdbManager.spawnOption);
+        })
+
+        it('should call spawn with correct argument when startDlog called and afterClear is false, timestamp is false', () => {
+            const mockSpawn = jest.fn().mockReturnValue({
+                stdout: {
+                    on: jest.fn()
+                },
+                stderr: {
+                    on: jest.fn()
+                },
+                on: jest.fn()
+            });
+
+            const sdbManager = new SdbManager(mockSpawn);
+            sdbManager.startDlog(false, true);
+            expect(sdbManager.isRunning).toBe(true);
+            expect(mockSpawn).toBeCalledWith(sdbManager.const.MAIN_COMMAND,
+                sdbManager.const.SDB_DLOG_START_WITH_TIMESTAMP,
                 sdbManager.spawnOption);
         })
 

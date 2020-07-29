@@ -67,7 +67,7 @@ describe('LogService', () => {
     })
 
     describe('setPower', () => {
-        it('should call sdbManager.startDlog with afterClear when setPower called with true', () => {
+        it('should call sdbManager.startDlog with afterClear, timestamp when setPower called with true', () => {
             const mockIpcMain = {
                 on: jest.fn(),
             }
@@ -77,8 +77,8 @@ describe('LogService', () => {
             }
             const logService = new LogService(mockIpcMain, mockSdbManager);
 
-            logService.setPower(true, 'banana');
-            expect(mockSdbManager.startDlog).toBeCalledWith('banana');
+            logService.setPower(true, 'banana', 'orange');
+            expect(mockSdbManager.startDlog).toBeCalledWith('banana', 'orange');
         })
 
         it('should call sdbManager.stopDlog with afterClear when setPower called with false', () => {
@@ -97,7 +97,7 @@ describe('LogService', () => {
     })
 
     describe('onPowerEvent', () => {
-        it('should call setPower with true, true when onPowerEvent called with "clearStart" argument', () => {
+        it('should call setPower with true, true, false when onPowerEvent called with "clear" argument', () => {
             const mockIpcMain = {
                 on: jest.fn(),
             }
@@ -108,11 +108,26 @@ describe('LogService', () => {
             const logService = new LogService(mockIpcMain, mockSdbManager);
             const mockSetPower = jest.fn();
             logService.setPower = mockSetPower;
-            logService.onPowerEvent(true, "clearStart");
-            expect(mockSetPower).toBeCalledWith(true, true);
+            logService.onPowerEvent(true, "clear");
+            expect(mockSetPower).toBeCalledWith(true, true, false);
         })
 
-        it('should call setPower with true, false when onPowerEvent called with other "start" argument', () => {
+        it('should call setPower with true, true, true when onPowerEvent called with "clear-time" argument', () => {
+            const mockIpcMain = {
+                on: jest.fn(),
+            }
+            const mockSdbManager = {
+                startDlog: jest.fn(),
+                stopDlog: jest.fn()
+            }
+            const logService = new LogService(mockIpcMain, mockSdbManager);
+            const mockSetPower = jest.fn();
+            logService.setPower = mockSetPower;
+            logService.onPowerEvent(true, "clear-time");
+            expect(mockSetPower).toBeCalledWith(true, true, true);
+        })
+
+        it('should call setPower with true, false, false when onPowerEvent called with other "start" argument', () => {
             const mockIpcMain = {
                 on: jest.fn(),
             }
@@ -124,7 +139,22 @@ describe('LogService', () => {
             const mockSetPower = jest.fn();
             logService.setPower = mockSetPower;
             logService.onPowerEvent(true, "start");
-            expect(mockSetPower).toBeCalledWith(true, false);
+            expect(mockSetPower).toBeCalledWith(true, false, false);
+        })
+
+        it('should call setPower with true, false, true when onPowerEvent called with other "start-time" argument', () => {
+            const mockIpcMain = {
+                on: jest.fn(),
+            }
+            const mockSdbManager = {
+                startDlog: jest.fn(),
+                stopDlog: jest.fn()
+            }
+            const logService = new LogService(mockIpcMain, mockSdbManager);
+            const mockSetPower = jest.fn();
+            logService.setPower = mockSetPower;
+            logService.onPowerEvent(true, "start-time");
+            expect(mockSetPower).toBeCalledWith(true, false, true);
         })
 
         it('should call setPower with false when onPowerEvent called without argument', () => {

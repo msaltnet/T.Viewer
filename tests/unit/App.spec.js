@@ -11,28 +11,47 @@ Vue.use(Vuetify);
 
 describe('App.vue', () => {
     describe('onSwitchChange', () => {
-        it('should send ipc "start" message when switch state is changed to true and sdbClearStart is false', () => {
+        it('should send ipc "start" message when switchListen is true, sdbClearStart and sdbTimestamp are false', () => {
             const vm = shallowMount(App).vm;
             vm.switchListen = true;
             vm.sdbClearStart = false;
+            vm.sdbTimestamp = false;
             vm.onSwitchChange();
             expect(ipcRenderer.send).toBeCalledWith("change-power", "start");
         })
 
-        it('should send ipc "clearStart" message when switch state is changed to true and sdbClearStart is true', () => {
+        it('should send ipc "clear" message when switchListen and sdbClearStart are true, sdbTimestamp is false', () => {
             const vm = shallowMount(App).vm;
             vm.switchListen = true;
             vm.sdbClearStart = true;
+            vm.sdbTimestamp = false;
             vm.onSwitchChange();
-            expect(ipcRenderer.send).toBeCalledWith("change-power", "clearStart");
+            expect(ipcRenderer.send).toBeCalledWith("change-power", "clear");
         })
 
-        it('should send ipc message with start and clearStart when switch state is changed to false', () => {
+        it('should send ipc "start-time" message when switchListen and sdbTimestamp true, sdbClearStart is false', () => {
+            const vm = shallowMount(App).vm;
+            vm.switchListen = true;
+            vm.sdbClearStart = false;
+            vm.sdbTimestamp = true;
+            vm.onSwitchChange();
+            expect(ipcRenderer.send).toBeCalledWith("change-power", "start-time");
+        })
+
+        it('should send ipc "clear-time" message when switchListen and sdbClearStart, sdbTimestamp are true', () => {
+            const vm = shallowMount(App).vm;
+            vm.switchListen = true;
+            vm.sdbClearStart = true;
+            vm.sdbTimestamp = true;
+            vm.onSwitchChange();
+            expect(ipcRenderer.send).toBeCalledWith("change-power", "clear-time");
+        })
+
+        it('should send ipc message with empty string when switch state is changed to false', () => {
             const vm = shallowMount(App).vm;
             vm.switchListen = false;
             vm.onSwitchChange();
-            expect(ipcRenderer.send).toBeCalledWith("change-power", expect.not.stringMatching("start"));
-            expect(ipcRenderer.send).toBeCalledWith("change-power", expect.not.stringMatching("clearStart"));
+            expect(ipcRenderer.send).toBeCalledWith("change-power", "");
         })
     })
 
