@@ -172,6 +172,7 @@ const LOG_LEVEL_POSITION = 0;
 const LOG_LEVEL_POSITION_WITH_TIMESTAMP = 24;
 const TAG_POSITION = 2;
 const TAG_POSITION_WITH_TIMESTAMP = 26;
+const APPBAR_TOOLBAR_HEIGHT = 64 + 88;
 export default {
   props: ['listenerId', 'tabName', 'isMain', 'fontSize', 'timestamp'],
   data: function () {
@@ -305,7 +306,7 @@ export default {
     },
     getEditorHeight: function () {
       // console.log(window.innerHeight - 64 - 88);
-      return window.innerHeight - 64 - 88;
+      return window.innerHeight - APPBAR_TOOLBAR_HEIGHT;
     },
     // 07-10 14:51:21.337+0900 I/RESOURCED( 2617): heart-battery.c:....
     filterLogLevel: function (line) {
