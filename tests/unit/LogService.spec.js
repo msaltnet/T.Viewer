@@ -106,15 +106,9 @@ describe('LogService', () => {
                 stopDlog: jest.fn()
             }
             const logService = new LogService(mockIpcMain, mockSdbManager);
-            const mockListener = {
-                sender: {
-                    id: "monkey"
-                }
-            };
-
             const mockSetPower = jest.fn();
             logService.setPower = mockSetPower;
-            logService.onPowerEvent(mockListener, "clearStart");
+            logService.onPowerEvent(true, "clearStart");
             expect(mockSetPower).toBeCalledWith(true, true);
         })
 
@@ -127,15 +121,9 @@ describe('LogService', () => {
                 stopDlog: jest.fn()
             }
             const logService = new LogService(mockIpcMain, mockSdbManager);
-            const mockListener = {
-                sender: {
-                    id: "monkey"
-                }
-            };
-
             const mockSetPower = jest.fn();
             logService.setPower = mockSetPower;
-            logService.onPowerEvent(mockListener, "start");
+            logService.onPowerEvent(true, "start");
             expect(mockSetPower).toBeCalledWith(true, false);
         })
 
@@ -148,25 +136,19 @@ describe('LogService', () => {
                 stopDlog: jest.fn()
             }
             const logService = new LogService(mockIpcMain, mockSdbManager);
-            const mockListener = {
-                sender: {
-                    id: "monkey"
-                }
-            };
-
             let mockSetPower = jest.fn();
             logService.setPower = mockSetPower;
-            logService.onPowerEvent(mockListener, null);
+            logService.onPowerEvent(true, 'mango');
             expect(mockSetPower).toBeCalledWith(false);
 
             let mockSetPower2 = jest.fn();
             logService.setPower = mockSetPower2;
-            logService.onPowerEvent(mockListener, false);
+            logService.onPowerEvent(true, false);
             expect(mockSetPower2).toBeCalledWith(false);
 
             let mockSetPower3 = jest.fn();
             logService.setPower = mockSetPower3;
-            logService.onPowerEvent(mockListener);
+            logService.onPowerEvent(true);
             expect(mockSetPower3).toBeCalledWith(false);
         })
     })

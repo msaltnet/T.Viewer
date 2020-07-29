@@ -33,14 +33,17 @@ export default class LogService {
     }
 
     onPowerEvent(event, arg) {
-        if (arg) {
-            if (arg == 'clearStart')
-                this.setPower(true, true);
-            else (arg == 'start')
-                this.setPower(true, false);
-        } else {
+        if (!arg) {
             this.setPower(false);
+            return;
         }
+
+        if (arg == 'clearStart')
+            this.setPower(true, true);
+        else if (arg == 'start')
+            this.setPower(true, false);
+        else
+            this.setPower(false);
     }
 
     setPower(on, afterClear) {

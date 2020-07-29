@@ -83,7 +83,7 @@
         v-bind:settingShow.sync="settingShow"
         :sdbClearStart.sync="sdbClearStart"
         :sdbTimestamp.sync="sdbTimestamp"
-        @restart="restartForSetting"
+        @restart="powerOff"
       />
     </v-content>
   </v-app>
@@ -143,8 +143,9 @@ export default {
     closeTab: function (index) {
       this.tabs.splice(index, 1);
     },
-    restartForSetting: function (restart) {
-      console.log('restart: ' + restart);
+    powerOff: function () {
+      this.switchListen = false;
+      ipcRenderer.send(POWER_EVENT_CHANNEL, '');
     }
   }
 };

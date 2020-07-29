@@ -91,4 +91,19 @@ describe('App.vue', () => {
             expect(vm.fontSize).toEqual(vm.fontSizeList[0]);
         })
     })
+
+    describe('powerOff', () => {
+        it('should send ipc "" message when powerOff is called', () => {
+            const vm = shallowMount(App).vm;
+            vm.powerOff();
+            expect(ipcRenderer.send).toBeCalledWith("change-power", "");
+        })
+
+        it('should set switchListen false when powerOff is called', () => {
+            const vm = shallowMount(App).vm;
+            vm.switchListen = true;
+            vm.powerOff();
+            expect(vm.switchListen).toEqual(false);
+        })
+    })
 })
