@@ -26,12 +26,16 @@ function createWindow () {
         iconPath = 'assets/icons/icon.ico';
     }
 
-    win = new BrowserWindow({
+    let win = new BrowserWindow({
         width: 1024, height: 700,
         webPreferences: {
             nodeIntegration: true
         },
-        icon: iconPath
+        icon: iconPath,
+        show: false
+    })
+    win.once('ready-to-show', () => {
+        win.show()
     })
 
     if (process.env.WEBPACK_DEV_SERVER_URL) {
