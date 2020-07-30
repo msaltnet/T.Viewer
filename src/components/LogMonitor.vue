@@ -54,13 +54,27 @@
         multiple
         v-on:change="onChangeControlButton()"
       >
-        <v-btn :value="1" text>
-          <v-icon>mdi-wrap</v-icon>
-        </v-btn>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn :value="1" text
+              v-bind="attrs"
+              v-on="on">
+              <v-icon>mdi-wrap</v-icon>
+            </v-btn>
+          </template>
+          <span>Soft Wrap</span>
+        </v-tooltip>
 
-        <v-btn :value="2" text>
-          <v-icon>mdi-format-align-bottom</v-icon>
-        </v-btn>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn :value="2" text
+              v-bind="attrs"
+              v-on="on">
+              <v-icon>mdi-format-align-bottom</v-icon>
+            </v-btn>
+          </template>
+          <span>Auto Scroll</span>
+        </v-tooltip>
       </v-btn-toggle>
 
       <v-divider class="mx-3" inset vertical></v-divider>
@@ -167,8 +181,14 @@ import AceEditor from '../AceEditor';
 import LogListener from '../LogListener';
 import GlobalSettings from '../globalSettings';
 import { ipcRenderer } from 'electron';
+
+const LOG_LEVEL_POSITION = 0;
+const LOG_LEVEL_POSITION_WITH_TIMESTAMP = 24;
+const TAG_POSITION = 2;
+const TAG_POSITION_WITH_TIMESTAMP = 26;
+const APPBAR_TOOLBAR_HEIGHT = 64 + 88;
 export default {
-  props: ['listenSwitch', 'listenerId', 'tabName', 'isMain', 'fontSize'],
+  props: ['listenerId', 'tabName', 'isMain', 'fontSize', 'timestamp'],
   data: function () {
     return {
       controlButtonStates: [2],
@@ -184,6 +204,9 @@ export default {
       tagRegex: null,
       messageRegexSetting: false,
       messageRegex: null,
+      newLineChar: '\n',
+      logLevelPosition: LOG_LEVEL_POSITION_WITH_TIMESTAMP,
+      tagPosition: TAG_POSITION_WITH_TIMESTAMP,
       logLevels: ["Verbose", "Debug", "Info", "Warning", "Error", "Fatal"],
       logLevelChars: ["V", "D", "I", "W", "E", "F"],
       logLevelsSelected: "Verbose", //TO DO load from settings
@@ -200,20 +223,31 @@ export default {
     }
   },
   watch: {
-    fontSize: function(fontSize) {
+    fontSize: function (fontSize) {
       this.viewer.setFontSize(fontSize + "px");
+    },
+    timestamp: function (timestamp) {
+      this.updateTimestamp(timestamp);
     }
   },
   created: function() {
     this.logListener = new LogListener(ipcRenderer);
     AceEditor.init();
     this.newTabName = this.tabName;
+    this.updateTimestamp(this.timestamp);
+    if (process.platform === 'win32') {
+      this.newLineChar = '\r\n';
+    }
   },
   mounted: function() {
     this.viewer = AceEditor.createViewer(this.$refs.viewer, this.globalSettings);
     window.addEventListener('resize', this.handleResize);
   },
   methods: {
+    updateTimestamp: function (timestamp) {
+      this.logLevelPosition = timestamp ? LOG_LEVEL_POSITION_WITH_TIMESTAMP : LOG_LEVEL_POSITION;
+      this.tagPosition = timestamp ? TAG_POSITION_WITH_TIMESTAMP : TAG_POSITION;
+    },
     onChangeControlButton: function () {
       if (this.controlButtonStates.indexOf(1) != -1)
         this.setWrap(true);
@@ -258,7 +292,7 @@ export default {
     },
     onMessageReceived: function (msg) {
       try {
-        let contents = msg.split('\r\n');
+        let contents = msg.split(this.newLineChar);
 
         contents.map(line => {
           return {
@@ -290,13 +324,12 @@ export default {
     },
     getEditorHeight: function () {
       // console.log(window.innerHeight - 64 - 88);
-      return window.innerHeight - 64 - 88;
+      return window.innerHeight - APPBAR_TOOLBAR_HEIGHT;
     },
     // 07-10 14:51:21.337+0900 I/RESOURCED( 2617): heart-battery.c:....
     filterLogLevel: function (line) {
-      const LOG_LEVEL_CHAR_START_POSITION = 24;
       let logLevelIndex = this.logLevels.indexOf(this.logLevelsSelected);
-      let logChar = line.substr(LOG_LEVEL_CHAR_START_POSITION,1);
+      let logChar = line.substr(this.logLevelPosition, 1);
 
       if (logLevelIndex == 0 || this.logLevelChars[5] == logChar)
         return true;
@@ -318,9 +351,8 @@ export default {
       if (this.tagFilter == '')
         return true;
 
-      const LOG_LEVEL_CHAR_START_POSITION = 26;
       let tagEndIndex = line.indexOf('(');
-      let tag = line.substring(LOG_LEVEL_CHAR_START_POSITION, tagEndIndex);
+      let tag = line.substring(this.tagPosition, tagEndIndex);
       tag = tag.replace(/\s/g, '');
       if (!this.tagRegexSetting)
         return tag === this.tagFilter;

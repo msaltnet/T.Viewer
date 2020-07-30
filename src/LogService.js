@@ -15,10 +15,6 @@ export default class LogService {
         this.ipcMain.on(this.POWER_EVENT_CHANNEL, this.onPowerEvent.bind(this));
     }
 
-    startTestMessage() {
-        setInterval(this.sendTestMessage.bind(this), 1000);
-    }
-
     onListenRegister(event, arg) {
         if (!event || !event.sender || event.sender.id == undefined)
             return;
@@ -37,14 +33,24 @@ export default class LogService {
     }
 
     onPowerEvent(event, arg) {
-        if (arg && arg == 'start') {
-            this.setPower(true);
-        } else {
+        if (!arg) {
             this.setPower(false);
+            return;
         }
+
+        if (arg == 'clear')
+            this.setPower(true, true, false);
+        else if (arg == 'clear-time')
+            this.setPower(true, true, true);
+        else if (arg == 'start')
+            this.setPower(true, false, false);
+        else if (arg == 'start-time')
+            this.setPower(true, false, true);
+        else
+            this.setPower(false);
     }
 
-    setPower(on) {
+    setPower(on, afterClear, timestamp) {
         if (!this.sdbManager) {
             console.error('Invaild sdbManager');
             return;
@@ -52,20 +58,9 @@ export default class LogService {
 
         console.log('setPower :' + on);
         if (on)
-            this.sdbManager.startDlog();
+            this.sdbManager.startDlog(afterClear, timestamp);
         else
             this.sdbManager.stopDlog();
-    }
-
-    sendTestMessage() {
-        for (var value of this.listenerMap.values()) {
-            let response = Date() + ' : TEST Message' + this.listenerMap.size;
-            let sender = webContents.fromId(value.id);
-            if (!sender) {
-                continue;
-            }
-            sender.send(value.channel, response);
-        }
     }
 
     sendLogMessage(data) {

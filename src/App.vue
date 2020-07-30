@@ -18,7 +18,9 @@
         <v-icon>mdi-format-font-size-increase</v-icon>
       </v-btn>
 
-      <v-btn icon class="mx-1">
+      <v-btn icon class="mx-1"
+        v-on:click="settingShow = true"
+      >
         <v-icon>mdi-cog</v-icon>
       </v-btn>
 
@@ -60,31 +62,38 @@
         <v-tab-item
           :value="'tab-main'">
           <LogMonitor
-            v-bind:listenSwitch="switchListen"
             listenerId="listener-0"
             tabName="MAIN"
             isMain="true"
             v-bind:fontSize="fontSize"
+            v-bind:timestamp="sdbTimestamp"
           />
         </v-tab-item>
 
         <v-tab-item v-for="tab in tabs" :key="tab.id" :value="'tab' + tab.id" >
           <LogMonitor
-            v-bind:listenSwitch="switchListen"
             v-bind:listenerId="'listener-' + tab.id"
             v-bind:tabName.sync="tab.name"
             isMain="false"
             v-bind:fontSize="fontSize"
+            v-bind:timestamp="sdbTimestamp"
           />
         </v-tab-item>
       </v-tabs-items>
 
+      <Settings
+        v-bind:settingShow.sync="settingShow"
+        :sdbClearStart.sync="sdbClearStart"
+        :sdbTimestamp.sync="sdbTimestamp"
+        @restart="powerOff"
+      />
     </v-content>
   </v-app>
 </template>
 
 <script>
 import LogMonitor from './components/LogMonitor';
+import Settings from './components/Settings';
 import { ipcRenderer } from 'electron';
 const POWER_EVENT_CHANNEL = "change-power";
 
@@ -92,8 +101,12 @@ export default {
   name: 'App',
   components: {
     LogMonitor,
+    Settings
   },
   data: () => ({
+    settingShow: false,
+    sdbClearStart: false,
+    sdbTimestamp: false,
     fontSize: 15,
     fontSizeList: [13, 15, 17, 19, 21, 23],
     fontSizeIndex: 1,
@@ -120,18 +133,25 @@ export default {
     },
     onSwitchChange: function () {
       let command = '';
-      if (this.switchListen)
-        command = 'start';
+      if (this.switchListen) {
+        command = this.sdbClearStart ? 'clear' : 'start';
+        if (this.sdbTimestamp)
+          command += '-time';
+      }
 
       ipcRenderer.send(POWER_EVENT_CHANNEL, command);
     },
-    createNewTab() {
+    createNewTab: function () {
       let id = this.getNewTabId();
       this.tabs.push({id: id, name: "tab-" + id});
     },
-    closeTab(index) {
+    closeTab: function (index) {
       this.tabs.splice(index, 1);
     },
+    powerOff: function () {
+      this.switchListen = false;
+      ipcRenderer.send(POWER_EVENT_CHANNEL, '');
+    }
   }
 };
 </script>

@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, Menu } from 'electron'
 import { spawn } from 'child_process'
 import {
     createProtocol //,
@@ -8,6 +8,8 @@ import {
 } from 'vue-cli-plugin-electron-builder/lib'
 import LogService from './LogService'
 import SdbManager from './SdbManager'
+import template from './menuTemplate'
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -18,12 +20,18 @@ protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true
 
 function createWindow () {
     // Create the browser window.
+    let iconPath = 'assets/icons/icon.png';
+
+    if (process.platform === 'win32') {
+        iconPath = 'assets/icons/icon.ico';
+    }
+
     win = new BrowserWindow({
         width: 1024, height: 700,
         webPreferences: {
             nodeIntegration: true
         },
-        icon: 'assets/icons/icon.ico'
+        icon: iconPath
     })
 
     if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -40,6 +48,9 @@ function createWindow () {
        win = null
     })
 }
+
+const menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {

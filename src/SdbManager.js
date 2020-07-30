@@ -3,8 +3,10 @@ export default class SdbManager {
         this.isRunning = false;
         this.const = {
             MAIN_COMMAND : 'sdb',
-            SDB_DLOG_COMMAND: ['dlog', '-v', 'time'],
-            SDB_DLOG_CLEAR_COMMAND: ['dlog', '-c'],
+            SDB_DLOG_START: ['shell', 'dlogutil'],
+            SDB_DLOG_START_WITH_TIMESTAMP: ['shell', 'dlogutil -v time'],
+            SDB_DLOG_CLEAR_START: ['shell', 'dlogutil -c && dlogutil'],
+            SDB_DLOG_CLEAR_START_WITH_TIMESTAMP: ['shell', 'dlogutil -c && dlogutil -v time'],
             LISTEN_EVENT: 'data',
             CLOSE_EVENT: 'close',
         };
@@ -33,21 +35,22 @@ export default class SdbManager {
         this.spawn = spawn;
     }
 
-    startDlog(){
+    startDlog(afterClear, timestamp){
         if (this.isRunning)
             return;
         console.log('Dlog Start!');
-        this.sdb = this.spawn(this.const.MAIN_COMMAND, this.const.SDB_DLOG_COMMAND, this.spawnOption);
+        let command = '';
+        if (afterClear) {
+            command = timestamp ? this.const.SDB_DLOG_CLEAR_START_WITH_TIMESTAMP : this.const.SDB_DLOG_CLEAR_START;
+        } else {
+            command = timestamp ? this.const.SDB_DLOG_START_WITH_TIMESTAMP : this.const.SDB_DLOG_START;
+        }
+
+        this.sdb = this.spawn(this.const.MAIN_COMMAND, command, this.spawnOption);
         this.isRunning = true;
 
         this.sdb.stdout.on(this.const.LISTEN_EVENT, this.onStdout.bind(this));
         this.sdb.stderr.on(this.const.LISTEN_EVENT, this.onErrorEvent.bind(this));
-        this.sdb.on(this.const.CLOSE_EVENT, this.onTerminatedEvent.bind(this));
-    }
-
-    clearDlog(){
-        console.log('Dlog Clear!');
-        this.sdb = this.spawn(this.const.MAIN_COMMAND, this.const.SDB_DLOG_CLEAR_COMMAND, this.spawnOption);
         this.sdb.on(this.const.CLOSE_EVENT, this.onTerminatedEvent.bind(this));
     }
 
@@ -74,7 +77,7 @@ export default class SdbManager {
 
     onStdout(data) {
         this._listener(data);
-        console.log(`stdout: ${data}`);
+        // console.log(`stdout: ${data}`);
     }
 
     onTerminatedEvent(code) {
