@@ -54,13 +54,27 @@
         multiple
         v-on:change="onChangeControlButton()"
       >
-        <v-btn :value="1" text>
-          <v-icon>mdi-wrap</v-icon>
-        </v-btn>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn :value="1" text
+              v-bind="attrs"
+              v-on="on">
+              <v-icon>mdi-wrap</v-icon>
+            </v-btn>
+          </template>
+          <span>Soft Wrap</span>
+        </v-tooltip>
 
-        <v-btn :value="2" text>
-          <v-icon>mdi-format-align-bottom</v-icon>
-        </v-btn>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn :value="2" text
+              v-bind="attrs"
+              v-on="on">
+              <v-icon>mdi-format-align-bottom</v-icon>
+            </v-btn>
+          </template>
+          <span>Auto Scroll</span>
+        </v-tooltip>
       </v-btn-toggle>
 
       <v-divider class="mx-3" inset vertical></v-divider>
