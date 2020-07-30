@@ -190,6 +190,7 @@ export default {
       tagRegex: null,
       messageRegexSetting: false,
       messageRegex: null,
+      newLineChar: '\n',
       logLevelPosition: LOG_LEVEL_POSITION_WITH_TIMESTAMP,
       tagPosition: TAG_POSITION_WITH_TIMESTAMP,
       logLevels: ["Verbose", "Debug", "Info", "Warning", "Error", "Fatal"],
@@ -220,6 +221,9 @@ export default {
     AceEditor.init();
     this.newTabName = this.tabName;
     this.updateTimestamp(this.timestamp);
+    if (process.platform === 'win32') {
+      this.newLineChar = '\r\n';
+    }
   },
   mounted: function() {
     this.viewer = AceEditor.createViewer(this.$refs.viewer, this.globalSettings);
@@ -274,7 +278,7 @@ export default {
     },
     onMessageReceived: function (msg) {
       try {
-        let contents = msg.split('\r\n');
+        let contents = msg.split(this.newLineChar);
 
         contents.map(line => {
           return {

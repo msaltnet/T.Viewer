@@ -18,12 +18,18 @@ protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true
 
 function createWindow () {
     // Create the browser window.
+    let iconPath = 'assets/icons/icon.png';
+
+    if (process.platform === 'win32') {
+        iconPath = 'assets/icons/icon.ico';
+    }
+
     win = new BrowserWindow({
         width: 1024, height: 700,
         webPreferences: {
             nodeIntegration: true
         },
-        icon: 'assets/icons/icon.ico'
+        icon: iconPath
     })
 
     if (process.env.WEBPACK_DEV_SERVER_URL) {
