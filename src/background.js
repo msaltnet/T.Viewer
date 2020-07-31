@@ -31,7 +31,11 @@ function createWindow () {
         webPreferences: {
             nodeIntegration: true
         },
-        icon: iconPath
+        icon: iconPath,
+        show: false
+    })
+    win.once('ready-to-show', () => {
+        win.show()
     })
 
     if (process.env.WEBPACK_DEV_SERVER_URL) {
