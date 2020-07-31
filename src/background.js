@@ -26,7 +26,7 @@ function createWindow () {
         iconPath = 'assets/icons/icon.ico';
     }
 
-    let win = new BrowserWindow({
+    win = new BrowserWindow({
         width: 1024, height: 700,
         webPreferences: {
             nodeIntegration: true
