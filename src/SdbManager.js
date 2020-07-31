@@ -15,19 +15,16 @@ export default class SdbManager {
         };
         this.listener;
         this._listener = (data) => {
-            // console.log(data);
             if (this.listener)
                 this.listener(data);
         };
         this.errorCallback;
         this._errorCallback = (data) => {
-            // console.log(data);
             if (this.errorCallback)
                 this.errorCallback(data);
         };
         this.terminatedCallback;
         this._terminatedCallback = (code) => {
-            // console.log(code);
             if (this.terminatedCallback)
                 this.terminatedCallback(code);
         };
@@ -38,7 +35,7 @@ export default class SdbManager {
     startDlog(afterClear, timestamp){
         if (this.isRunning)
             return;
-        console.log('Dlog Start!');
+
         let command = '';
         if (afterClear) {
             command = timestamp ? this.const.SDB_DLOG_CLEAR_START_WITH_TIMESTAMP : this.const.SDB_DLOG_CLEAR_START;
@@ -63,7 +60,7 @@ export default class SdbManager {
     stopDlog(){
         if (!this.isRunning || !this.sdb)
             return;
-        console.log('Dlog Stop!');
+
         this.sdb.kill();
         this.isRunning = false;
         this.sdb = null;
@@ -77,16 +74,14 @@ export default class SdbManager {
 
     onStdout(data) {
         this._listener(data);
-        // console.log(`stdout: ${data}`);
     }
 
     onTerminatedEvent(code) {
         this._terminatedCallback(code);
-        console.log(`child process exited with code ${code}`);
+        // console.log(`child process exited with code ${code}`);
     }
 
     onErrorEvent(data) {
         this._errorCallback(data);
-        console.error(`stderr: ${data}`);
     }
 }

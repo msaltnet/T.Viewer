@@ -24,10 +24,8 @@ export default class LogService {
                 id: event.sender.id,
                 channel: arg,
             };
-            console.log('Set :' + event.sender.id);
             this.listenerMap.set(event.sender.id, listenerInfo);
         } else {
-            console.log('Delete :' + event.sender.id);
             this.listenerMap.delete(event.sender.id);
         }
     }
@@ -56,7 +54,7 @@ export default class LogService {
             return;
         }
 
-        console.log('setPower :' + on);
+        // console.log('setPower :' + on);
         if (on)
             this.sdbManager.startDlog(afterClear, timestamp);
         else
