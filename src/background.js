@@ -9,6 +9,7 @@ import {
 import LogService from './LogService'
 import SdbManager from './SdbManager'
 import template from './menuTemplate'
+import path from 'path'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -20,10 +21,14 @@ protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true
 
 function createWindow () {
     // Create the browser window.
-    let iconPath = 'assets/icons/icon.png';
+    let iconPath = 'assets/icons/icon.ico';
 
-    if (process.platform === 'win32') {
-        iconPath = 'assets/icons/icon.ico';
+    // linux AppImage
+    if (process.platform !== 'win32') {
+        if (process.env.WEBPACK_DEV_SERVER_URL)
+            iconPath = 'assets/icons/icon.png';
+        else
+            iconPath = path.join(__dirname, '../../tviewer.png');
     }
 
     win = new BrowserWindow({
