@@ -101,10 +101,6 @@ app.on('ready', async () => {
     let sdbManager = new SdbManager(spawn);
     let logService = new LogService(ipcMain, sdbManager);
     logService.init();
-    // logService.startTestMessage();
-    sdbManager.registerListener((data)=>{
-        logService.sendLogMessage(data);
-    });
 })
 
 // Exit cleanly on request from parent process in development mode.

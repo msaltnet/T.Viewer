@@ -9,25 +9,96 @@ describe('LogService', () => {
             const mockIpcMain = {
                 on: jest.fn(),
             }
-            const logService = new LogService(mockIpcMain);
+            const mockSdbManager = {
+                registerListener: jest.fn(),
+                registerStateListener: jest.fn(),
+                startChecking: jest.fn()
+            }
+            const logService = new LogService(mockIpcMain, mockSdbManager);
 
             logService.init();
             expect(mockIpcMain.on).toBeCalledWith(logService.LISTEN_REQUEST_CHANNEL, expect.any(Function));
+        })
+
+        it('should register onStateListenRegister callback to ipcMain', () => {
+            const mockIpcMain = {
+                on: jest.fn(),
+            }
+            const mockSdbManager = {
+                registerListener: jest.fn(),
+                registerStateListener: jest.fn(),
+                startChecking: jest.fn()
+            }
+            const logService = new LogService(mockIpcMain, mockSdbManager);
+
+            logService.init();
+            expect(mockIpcMain.on).toBeCalledWith(logService.STATE_LISTEN_REQUEST_CHANNEL, expect.any(Function));
         })
 
         it('should register onPowerEvent callback to ipcMain', () => {
             const mockIpcMain = {
                 on: jest.fn(),
             }
-            const logService = new LogService(mockIpcMain);
+            const mockSdbManager = {
+                registerListener: jest.fn(),
+                registerStateListener: jest.fn(),
+                startChecking: jest.fn()
+            }
+            const logService = new LogService(mockIpcMain, mockSdbManager);
 
             logService.init();
             expect(mockIpcMain.on).toBeCalledWith(logService.POWER_EVENT_CHANNEL, expect.any(Function));
         })
+
+        it('should call sdbManager.registerListener', () => {
+            const mockIpcMain = {
+                on: jest.fn(),
+            }
+            const mockSdbManager = {
+                registerListener: jest.fn(),
+                registerStateListener: jest.fn(),
+                startChecking: jest.fn()
+            }
+            const logService = new LogService(mockIpcMain, mockSdbManager);
+
+            logService.init();
+            expect(mockSdbManager.registerListener).toBeCalledWith(expect.any(Function), expect.any(Function));
+        })
+
+        it('should call sdbManager.registerStateListener', () => {
+            const mockIpcMain = {
+                on: jest.fn(),
+            }
+            const mockSdbManager = {
+                registerListener: jest.fn(),
+                registerStateListener: jest.fn(),
+                startChecking: jest.fn()
+            }
+            const logService = new LogService(mockIpcMain, mockSdbManager);
+
+            logService.init();
+            expect(mockSdbManager.registerStateListener).toBeCalledWith(expect.any(Function));
+        })
+
+        it('should call sdbManager.startChecking', () => {
+            const mockIpcMain = {
+                on: jest.fn(),
+            }
+            const mockSdbManager = {
+                registerListener: jest.fn(),
+                registerStateListener: jest.fn(),
+                startChecking: jest.fn()
+            }
+            const logService = new LogService(mockIpcMain, mockSdbManager);
+
+            logService.init();
+            expect(mockSdbManager.startChecking).toBeCalledTimes(1);
+        })
+
     })
 
-    describe('onListenRegister', () => {
-        it('should have a listener after onListenRegister called with channel info', () => {
+    describe('setListenerMap', () => {
+        it('should have a listener after setListenerMap called with channel info', () => {
             const mockIpcMain = {
                 on: jest.fn(),
             }
@@ -41,13 +112,20 @@ describe('LogService', () => {
 
             expect(logService.listenerMap.size).toEqual(0);
 
-            logService.onListenRegister(mockListener, mockChannel);
+            logService.setListenerMap(mockListener, mockChannel, logService.listenerMap);
             expect(logService.listenerMap.size).toEqual(1);
             expect(logService.listenerMap.get(mockListener.sender.id).id).toEqual(mockListener.sender.id);
             expect(logService.listenerMap.get(mockListener.sender.id).channel).toEqual(mockChannel);
+
+            expect(logService.stateListenerMap.size).toEqual(0);
+
+            logService.setListenerMap(mockListener, mockChannel, logService.stateListenerMap);
+            expect(logService.stateListenerMap.size).toEqual(1);
+            expect(logService.stateListenerMap.get(mockListener.sender.id).id).toEqual(mockListener.sender.id);
+            expect(logService.stateListenerMap.get(mockListener.sender.id).channel).toEqual(mockChannel);
         })
 
-        it('should delete listener after onListenRegister called with null channel info', () => {
+        it('should delete listener after setListenerMap called with null channel info', () => {
             const mockIpcMain = {
                 on: jest.fn(),
             }
@@ -61,7 +139,7 @@ describe('LogService', () => {
             logService.listenerMap.set(mockListener.sender.id, mockListener.sender);
             expect(logService.listenerMap.size).toEqual(1);
 
-            logService.onListenRegister(mockListener, null);
+            logService.setListenerMap(mockListener, null, logService.listenerMap);
             expect(logService.listenerMap.size).toEqual(0);
         })
     })
