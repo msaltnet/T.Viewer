@@ -94,6 +94,6 @@ export default class LogService {
 
     sendStateMessage(data) {
         console.log(data);
-        this.sendMessage(data, this.listenerMap);
+        this.sendMessage(data, this.stateListenerMap);
     }
 }
