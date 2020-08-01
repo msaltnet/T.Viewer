@@ -308,7 +308,7 @@ describe('SdbManager', () => {
     })
 
     describe('registerListener', () => {
-        it('should call registered listener callback when onStdout called', () => {
+        it('should call registered listener callback when onStdout is called', () => {
             const mockListener = jest.fn();
             const sdbManager = new SdbManager();
             sdbManager.registerListener(mockListener);
@@ -316,7 +316,7 @@ describe('SdbManager', () => {
             expect(mockListener).toBeCalledWith('banana');
         })
 
-        it('should call registered errorCallback callback when onErrorEvent called', () => {
+        it('should call registered errorCallback callback when onErrorEvent is called', () => {
             const mockErrorCallback = jest.fn();
             const sdbManager = new SdbManager();
             sdbManager.registerListener(null, mockErrorCallback);
@@ -324,12 +324,19 @@ describe('SdbManager', () => {
             expect(mockErrorCallback).toBeCalledWith('apple');
         })
 
-        it('should call registered terminatedCallback callback when onTerminatedEvent called', () => {
+        it('should call registered terminatedCallback callback when onTerminatedEvent is called', () => {
             const mockTerminatedCallback = jest.fn();
             const sdbManager = new SdbManager();
             sdbManager.registerListener(null, null, mockTerminatedCallback);
             sdbManager.onTerminatedEvent('lemon');
             expect(mockTerminatedCallback).toBeCalledWith('lemon');
+        })
+
+        it('should set isRunning false when onTerminatedEvent is called', () => {
+            const sdbManager = new SdbManager();
+            sdbManager.isRunning = true;
+            sdbManager.onTerminatedEvent('lemon');
+            expect(sdbManager.isRunning).toEqual(false);
         })
     })
 

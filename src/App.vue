@@ -5,7 +5,14 @@
       <v-toolbar-title class="headline">
         <span class="font-weight-light">T.Viewer</span>
       </v-toolbar-title>
-
+      <v-chip
+        class="ma-2 ml-10"
+        dense
+        :color="stateColor"
+        :text-color="stateTextColor"
+      >
+        {{ stateText }}
+      </v-chip>
       <v-spacer></v-spacer>
 
       <v-btn icon class="mx-1"
@@ -32,6 +39,7 @@
         v-on:change="onSwitchChange"
         prepend-icon="mdi-power"
         class="mx-1"
+        :disabled="state!='connected'"
       ></v-switch>
     </v-app-bar>
 
@@ -94,9 +102,31 @@
 <script>
 import LogMonitor from './components/LogMonitor';
 import Settings from './components/Settings';
+import StateListener from './StateListener';
 import { ipcRenderer } from 'electron';
 const POWER_EVENT_CHANNEL = "change-power";
-
+const STATE_CHIP_COLOR = {
+  NONE: {
+    color: 'gray',
+    textColor: 'blue-grey darken-3',
+    text: 'Not Connected'
+  },
+  ERROR: {
+    color: 'red',
+    textColor: 'white',
+    text: 'Error - Check SDB Connection'
+  },
+  MULTI: {
+    color: 'orange',
+    textColor: 'white',
+    text: 'Too Many Devices'
+  },
+  CONNECTED: {
+    color: 'green',
+    textColor: 'white',
+    text: 'Connected'
+  }
+}
 export default {
   name: 'App',
   components: {
@@ -104,6 +134,10 @@ export default {
     Settings
   },
   data: () => ({
+    state: 'none',
+    stateColor: STATE_CHIP_COLOR.NONE.color,
+    stateTextColor: STATE_CHIP_COLOR.NONE.textColor,
+    stateText: STATE_CHIP_COLOR.NONE.text,
     settingShow: false,
     sdbClearStart: false,
     sdbTimestamp: false,
@@ -115,7 +149,38 @@ export default {
     currentItem: 'tab-main',
     switchListen: false
   }),
+  created: function() {
+    this.stateListener = new StateListener(ipcRenderer);
+    this.stateListener.registerListener(this.onStateReceived);
+  },
   methods: {
+    onStateReceived: function (state) {
+      if (state == 'error') {
+        this.switchListen = false;
+        this.stateColor = STATE_CHIP_COLOR.ERROR.color;
+        this.stateTextColor = STATE_CHIP_COLOR.ERROR.textColor;
+        this.stateText = STATE_CHIP_COLOR.ERROR.text;
+        this.state = state;
+      } else if (state == 'multi-connected') {
+        this.switchListen = false;
+        this.stateColor = STATE_CHIP_COLOR.MULTI.color;
+        this.stateTextColor = STATE_CHIP_COLOR.MULTI.textColor;
+        this.stateText = STATE_CHIP_COLOR.MULTI.text;
+        this.state = state;
+      } else if (state.indexOf('connected') == 0) {
+        let id = state.slice(10);
+        this.stateColor = STATE_CHIP_COLOR.CONNECTED.color;
+        this.stateTextColor = STATE_CHIP_COLOR.CONNECTED.textColor;
+        this.stateText = id;
+        this.state = 'connected';
+      } else {
+        this.switchListen = false;
+        this.stateColor = STATE_CHIP_COLOR.NONE.color;
+        this.stateTextColor = STATE_CHIP_COLOR.NONE.textColor;
+        this.stateText = STATE_CHIP_COLOR.NONE.text;
+        this.state = 'none';
+      }
+    },
     getNewTabId: function () {
       return this.increamentalId++;
     },

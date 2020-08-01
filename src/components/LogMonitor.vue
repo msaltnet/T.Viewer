@@ -285,7 +285,6 @@ export default {
     onSwitchChanged: function () {
       if (this.isListenerOn) {
         this.listenerTag = this.logListener.registerListener(this.onMessageReceived);
-        // console.log(this.listenerTag);
       } else {
         this.logListener.unregisterListener(this.listenerTag);
       }

@@ -10,6 +10,72 @@ import {
 Vue.use(Vuetify);
 
 describe('App.vue', () => {
+    describe('onStateReceived', () => {
+        it('should set correct value when state is "error"', () => {
+            const vm = shallowMount(App).vm;
+            vm.switchListen = true;
+            vm.stateColor = 'banana';
+            vm.stateTextColor = 'apple';
+            vm.stateText = 'mango';
+            vm.state = 'orange';
+
+            vm.onStateReceived('error');
+            expect(vm.switchListen).toEqual(false);
+            expect(vm.stateColor).toEqual('red');
+            expect(vm.stateTextColor).toEqual('white');
+            expect(vm.stateText).toEqual('Error - Check SDB Connection');
+            expect(vm.state).toEqual('error');
+        })
+
+        it('should set correct value when state is "none"', () => {
+            const vm = shallowMount(App).vm;
+            vm.switchListen = true;
+            vm.stateColor = 'banana';
+            vm.stateTextColor = 'apple';
+            vm.stateText = 'mango';
+            vm.state = 'orange';
+
+            vm.onStateReceived('none');
+            expect(vm.switchListen).toEqual(false);
+            expect(vm.stateColor).toEqual('gray');
+            expect(vm.stateTextColor).toEqual('blue-grey darken-3');
+            expect(vm.stateText).toEqual('Not Connected');
+            expect(vm.state).toEqual('none');
+        })
+
+        it('should set correct value when state is "multi-connected"', () => {
+            const vm = shallowMount(App).vm;
+            vm.switchListen = true;
+            vm.stateColor = 'banana';
+            vm.stateTextColor = 'apple';
+            vm.stateText = 'mango';
+            vm.state = 'orange';
+
+            vm.onStateReceived('multi-connected');
+            expect(vm.switchListen).toEqual(false);
+            expect(vm.stateColor).toEqual('orange');
+            expect(vm.stateTextColor).toEqual('white');
+            expect(vm.stateText).toEqual('Too Many Devices');
+            expect(vm.state).toEqual('multi-connected');
+        })
+
+        it('should set correct value when state is "connected"', () => {
+            const vm = shallowMount(App).vm;
+            vm.switchListen = true;
+            vm.stateColor = 'banana';
+            vm.stateTextColor = 'apple';
+            vm.stateText = 'mango';
+            vm.state = 'orange';
+
+            vm.onStateReceived('connected-lemon');
+            expect(vm.switchListen).toEqual(true);
+            expect(vm.stateColor).toEqual('green');
+            expect(vm.stateTextColor).toEqual('white');
+            expect(vm.stateText).toEqual('lemon');
+            expect(vm.state).toEqual('connected');
+        })
+    })
+
     describe('onSwitchChange', () => {
         it('should send ipc "start" message when switchListen is true, sdbClearStart and sdbTimestamp are false', () => {
             const vm = shallowMount(App).vm;

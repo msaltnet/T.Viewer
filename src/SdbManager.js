@@ -141,8 +141,8 @@ export default class SdbManager {
     onTerminatedEvent(code) {
         console.log(`onTerminate ${code}`);
         this.sdb = null;
+        this.isRunning = false;
         this._terminatedCallback(code);
-        // console.log(`child process exited with code ${code}`);
     }
 
     onErrorEvent(data) {
