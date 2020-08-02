@@ -15,6 +15,7 @@
   "dependencies": {
     "ace-builds": "^1.4.7",
     "core-js": "^3.1.2",
+    "electron-store": "^6.0.0",
     "typeface-roboto": "0.0.75",
     "vue": "^2.6.10",
     "vuetify": "^2.1.0"

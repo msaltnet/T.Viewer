@@ -144,35 +144,31 @@ describe('App.vue', () => {
     describe('Font', () => {
         it('should set correct fontSize when onFontUpButtonClick is called', () => {
             const vm = shallowMount(App).vm;
-            vm.fontSizeIndex = 1;
-            vm.fontSize = vm.fontSizeList[vm.fontSizeIndex];
+            let fontSizeIndex = 1;
+            vm.fontSize = vm.fontSizeList[fontSizeIndex];
             vm.onFontUpButtonClick();
 
-            expect(vm.fontSizeIndex).toEqual(2);
             expect(vm.fontSize).toEqual(vm.fontSizeList[2]);
 
-            vm.fontSizeIndex = vm.fontSizeList.length - 1;
-            vm.fontSize = vm.fontSizeList[vm.fontSizeIndex];
+            fontSizeIndex = vm.fontSizeList.length - 1;
+            vm.fontSize = vm.fontSizeList[fontSizeIndex];
             vm.onFontUpButtonClick();
 
-            expect(vm.fontSizeIndex).toEqual(vm.fontSizeList.length - 1);
-            expect(vm.fontSize).toEqual(vm.fontSizeList[vm.fontSizeList.length - 1]);
+            expect(vm.fontSize).toEqual(vm.fontSizeList[fontSizeIndex]);
         })
 
         it('should set correct fontSize when onFontDownButtonClick is called', () => {
             const vm = shallowMount(App).vm;
-            vm.fontSizeIndex = 1;
-            vm.fontSize = vm.fontSizeList[vm.fontSizeIndex];
+            let fontSizeIndex = 1;
+            vm.fontSize = vm.fontSizeList[fontSizeIndex];
             vm.onFontDownButtonClick();
 
-            expect(vm.fontSizeIndex).toEqual(0);
             expect(vm.fontSize).toEqual(vm.fontSizeList[0]);
 
-            vm.fontSizeIndex = 0;
-            vm.fontSize = vm.fontSizeList[vm.fontSizeIndex];
+            fontSizeIndex = 0;
+            vm.fontSize = vm.fontSizeList[fontSizeIndex];
             vm.onFontDownButtonClick();
 
-            expect(vm.fontSizeIndex).toEqual(0);
             expect(vm.fontSize).toEqual(vm.fontSizeList[0]);
         })
     })

@@ -104,6 +104,9 @@ import LogMonitor from './components/LogMonitor';
 import Settings from './components/Settings';
 import StateListener from './StateListener';
 import { ipcRenderer } from 'electron';
+import Store from './ElectronStoreWrapper';
+
+const store = new Store();
 const POWER_EVENT_CHANNEL = "change-power";
 const STATE_CHIP_COLOR = {
   NONE: {
@@ -139,11 +142,10 @@ export default {
     stateTextColor: STATE_CHIP_COLOR.NONE.textColor,
     stateText: STATE_CHIP_COLOR.NONE.text,
     settingShow: false,
-    sdbClearStart: false,
-    sdbTimestamp: false,
+    sdbClearStart: true,
+    sdbTimestamp: true,
     fontSize: 15,
     fontSizeList: [13, 15, 17, 19, 21, 23],
-    fontSizeIndex: 1,
     increamentalId: 0,
     tabs: [],
     currentItem: 'tab-main',
@@ -152,8 +154,39 @@ export default {
   created: function() {
     this.stateListener = new StateListener(ipcRenderer);
     this.stateListener.registerListener(this.onStateReceived);
+    this.restoreSettings();
+  },
+  watch: {
+    sdbClearStart: function () {
+      this.storeSettings();
+    },
+    sdbTimestamp: function () {
+      this.storeSettings();
+    },
   },
   methods: {
+    storeSettings: function () {
+      let settings = {
+        fontSize: this.fontSize,
+        sdbClearStart: this.sdbClearStart,
+        sdbTimestamp: this.sdbTimestamp
+      };
+      store.set('settings', settings);
+    },
+    restoreSettings: function () {
+      let settings = store.get('settings');
+      if (!settings)
+        return;
+
+      if (typeof settings.fontSize != 'undefined')
+        this.fontSize = settings.fontSize;
+
+      if (typeof settings.sdbClearStart != 'undefined')
+        this.sdbClearStart = settings.sdbClearStart;
+
+      if (typeof settings.sdbTimestamp != 'undefined')
+        this.sdbTimestamp = settings.sdbTimestamp;
+    },
     onStateReceived: function (state) {
       if (state == 'error') {
         this.switchListen = false;
@@ -185,15 +218,21 @@ export default {
       return this.increamentalId++;
     },
     onFontUpButtonClick: function () {
-      if (this.fontSizeIndex + 1 < this.fontSizeList.length) {
-        this.fontSizeIndex++;
-        this.fontSize = this.fontSizeList[this.fontSizeIndex];
+      for (let i = 0; i < this.fontSizeList.length; i++) {
+        if (this.fontSize < this.fontSizeList[i]) {
+          this.fontSize = this.fontSizeList[i];
+          this.storeSettings();
+          return;
+        }
       }
     },
     onFontDownButtonClick: function () {
-      if (this.fontSizeIndex - 1 >= 0) {
-        this.fontSizeIndex--;
-        this.fontSize = this.fontSizeList[this.fontSizeIndex];
+      for (let i = this.fontSizeList.length - 1; i >= 0; i--) {
+        if (this.fontSize > this.fontSizeList[i]) {
+          this.fontSize = this.fontSizeList[i];
+          this.storeSettings();
+          return;
+        }
       }
     },
     onSwitchChange: function () {
@@ -203,7 +242,6 @@ export default {
         if (this.sdbTimestamp)
           command += '-time';
       }
-
       ipcRenderer.send(POWER_EVENT_CHANNEL, command);
     },
     createNewTab: function () {
