@@ -6,7 +6,7 @@ describe('AceEditor', () => {
     })
 
     it('should call setOptions with correct options when createViewer is called', () => {
-        AceEditor.createViewer("mango", {fontSize: "100"});
+        AceEditor.createViewer("mango", 100);
         let options = ace.setOptions.mock.calls[0][0];
         expect(options.readOnly).toEqual(true);
         expect(options.highlightActiveLine).toEqual(false);

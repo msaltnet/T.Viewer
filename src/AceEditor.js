@@ -68,7 +68,7 @@ export default class AceEditor {
         return [verboseRule, debugRule, infoRule, warningRule, errorRule, fatalRule];
     }
 
-    static createViewer(DOMElement, globalSettings) {
+    static createViewer(DOMElement, fontSize) {
         const viewer = ace.edit(DOMElement);
 
         viewer.setOptions({
@@ -77,7 +77,7 @@ export default class AceEditor {
             showPrintMargin: false,
             mode: "ace/mode/log",
             fontFamily: "Consolas, monaco, 'Courier New', Courier, monospace",
-            fontSize: globalSettings.fontSize + "px"
+            fontSize: fontSize + "px"
         });
 
         return viewer;

@@ -179,7 +179,6 @@
 <script>
 import AceEditor from '../AceEditor';
 import LogListener from '../LogListener';
-import GlobalSettings from '../globalSettings';
 import { ipcRenderer } from 'electron';
 
 const LOG_LEVEL_POSITION = 0;
@@ -210,7 +209,6 @@ export default {
       logLevels: ["Verbose", "Debug", "Info", "Warning", "Error", "Fatal"],
       logLevelChars: ["V", "D", "I", "W", "E", "F"],
       logLevelsSelected: "Verbose", //TO DO load from settings
-      globalSettings: new GlobalSettings(),
       editorHeight: this.getEditorHeight(),
     }
   },
@@ -240,7 +238,7 @@ export default {
     }
   },
   mounted: function() {
-    this.viewer = AceEditor.createViewer(this.$refs.viewer, this.globalSettings);
+    this.viewer = AceEditor.createViewer(this.$refs.viewer, this.fontSize);
     window.addEventListener('resize', this.handleResize);
   },
   methods: {
