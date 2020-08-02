@@ -50,12 +50,12 @@ describe('LogMonitor.vue', () => {
     })
     const vm = wrapper.vm;
     vm.setWrap = jest.fn();
-    vm.controlButtonStates = [1];
+    vm.controlButtonStates = [0];
     vm.onChangeControlButton();
     expect(vm.setWrap).toBeCalledWith(true);
 
     vm.setWrap = jest.fn();
-    vm.controlButtonStates = [2];
+    vm.controlButtonStates = [1];
     vm.onChangeControlButton();
     expect(vm.setWrap).toBeCalledWith(false);
   })
@@ -68,12 +68,12 @@ describe('LogMonitor.vue', () => {
     const vm = wrapper.vm;
     vm.setWrap = jest.fn();
     vm.autoScroll = true;
-    vm.controlButtonStates = [1];
+    vm.controlButtonStates = [0];
     vm.onChangeControlButton();
     expect(vm.autoScroll).toEqual(false);
 
     vm.autoScroll = false;
-    vm.controlButtonStates = [2];
+    vm.controlButtonStates = [1];
     vm.onChangeControlButton();
     expect(vm.autoScroll).toEqual(true);
   })

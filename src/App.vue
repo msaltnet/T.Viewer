@@ -71,6 +71,7 @@
           :value="'tab-main'">
           <LogMonitor
             listenerId="listener-0"
+            tabId="MAIN"
             tabName="MAIN"
             isMain="true"
             v-bind:fontSize="fontSize"
@@ -81,6 +82,7 @@
         <v-tab-item v-for="tab in tabs" :key="tab.id" :value="'tab' + tab.id" >
           <LogMonitor
             v-bind:listenerId="'listener-' + tab.id"
+            v-bind:tabId="tab.id"
             v-bind:tabName.sync="tab.name"
             isMain="false"
             v-bind:fontSize="fontSize"

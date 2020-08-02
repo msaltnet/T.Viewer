@@ -56,7 +56,7 @@
       >
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn :value="1" text
+            <v-btn text
               v-bind="attrs"
               v-on="on">
               <v-icon>mdi-wrap</v-icon>
@@ -67,7 +67,7 @@
 
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn :value="2" text
+            <v-btn text
               v-bind="attrs"
               v-on="on">
               <v-icon>mdi-format-align-bottom</v-icon>
@@ -116,7 +116,9 @@
           <v-container>
             <v-row>
               <v-col cols="9">
-                <v-text-field label="Tag" v-model="tagFilter"></v-text-field>
+                <v-text-field label="Tag" v-model="tagFilter"
+                  v-on:change="storeSettings()"
+                ></v-text-field>
               </v-col>
               <v-col cols="3">
                 <v-checkbox
@@ -126,7 +128,9 @@
                 ></v-checkbox>
               </v-col>
               <v-col cols="9">
-                <v-text-field label="Message" v-model="messageFilter"></v-text-field>
+                <v-text-field label="Message" v-model="messageFilter"
+                  v-on:change="storeSettings()"
+                ></v-text-field>
               </v-col>
               <v-col cols="3">
                 <v-checkbox
@@ -180,18 +184,21 @@
 import AceEditor from '../AceEditor';
 import LogListener from '../LogListener';
 import { ipcRenderer } from 'electron';
+import Store from '../ElectronStoreWrapper';
 
+const store = new Store();
 const LOG_LEVEL_POSITION = 0;
 const LOG_LEVEL_POSITION_WITH_TIMESTAMP = 24;
 const TAG_POSITION = 2;
 const TAG_POSITION_WITH_TIMESTAMP = 26;
 const APPBAR_TOOLBAR_HEIGHT = 64 + 88;
 export default {
-  props: ['listenerId', 'tabName', 'isMain', 'fontSize', 'timestamp'],
+  props: ['tabId', 'tabName', 'isMain', 'fontSize', 'timestamp'],
   data: function () {
     return {
-      controlButtonStates: [2],
       autoScroll: true,
+      softWrap: false,
+      controlButtonStates: [1],
       dialog: false,
       dialogForTag: false,
       newTabName: '',
@@ -208,7 +215,7 @@ export default {
       tagPosition: TAG_POSITION_WITH_TIMESTAMP,
       logLevels: ["Verbose", "Debug", "Info", "Warning", "Error", "Fatal"],
       logLevelChars: ["V", "D", "I", "W", "E", "F"],
-      logLevelsSelected: "Verbose", //TO DO load from settings
+      logLevelsSelected: "Verbose",
       editorHeight: this.getEditorHeight(),
     }
   },
@@ -240,30 +247,84 @@ export default {
   mounted: function() {
     this.viewer = AceEditor.createViewer(this.$refs.viewer, this.fontSize);
     window.addEventListener('resize', this.handleResize);
+    this.restoreSettings();
   },
   methods: {
+    storeSettings: function () {
+      let key = this.tabId;
+      let settings = {
+        autoScroll: this.autoScroll,
+        softWrap: this.softWrap,
+        logLevelsSelected: this.logLevelsSelected,
+        tagRegexSetting: this.tagRegexSetting,
+        tagFilter: this.tagFilter,
+        messageRegexSetting: this.messageRegexSetting,
+        messageFilter: this.messageFilter
+      };
+      store.set(key, settings);
+      console.log(settings);
+    },
+    restoreSettings: function () {
+      let key = this.tabId;
+      let settings = store.get(key);
+      console.log(settings);
+
+      if (!settings)
+        return;
+
+      this.autoScroll = settings.autoScroll;
+      this.setToggleButton(1, this.autoScroll);
+      this.setWrap(settings.softWrap);
+      this.setToggleButton(0, settings.softWrap);
+      this.logLevelsSelected = settings.logLevelsSelected;
+      this.tagRegexSetting = settings.tagRegexSetting;
+      this.tagFilter = settings.tagFilter;
+      if (this.tagRegexSetting)
+        this.tagRegex = new RegExp(this.tagFilter, 'u');
+
+      this.messageRegexSetting = settings.messageRegexSetting;
+      this.messageFilter = settings.messageFilter;
+      if (this.messageRegexSetting)
+        this.messageRegex = new RegExp(this.messageFilter, 'u');
+    },
+    setToggleButton: function (type, on) {
+      let index = this.controlButtonStates.indexOf(type);
+
+      if (on) {
+        if (index == -1)
+          this.controlButtonStates.push(type);
+      } else {
+        if (index != -1)
+          this.controlButtonStates.splice(index, 1);
+      }
+    },
     updateTimestamp: function (timestamp) {
       this.logLevelPosition = timestamp ? LOG_LEVEL_POSITION_WITH_TIMESTAMP : LOG_LEVEL_POSITION;
       this.tagPosition = timestamp ? TAG_POSITION_WITH_TIMESTAMP : TAG_POSITION;
     },
     onChangeControlButton: function () {
-      if (this.controlButtonStates.indexOf(1) != -1)
+      console.log(this.controlButtonStates);
+      if (this.controlButtonStates.indexOf(0) != -1)
         this.setWrap(true);
       else
         this.setWrap(false);
 
-      if (this.controlButtonStates.indexOf(2) != -1)
+      if (this.controlButtonStates.indexOf(1) != -1)
         this.autoScroll = true;
       else
         this.autoScroll = false;
+
+      this.storeSettings();
     },
     onChangeTagRegex: function () {
       if (this.tagRegexSetting)
         this.tagRegex = new RegExp(this.tagFilter, 'u');
+      this.storeSettings();
     },
     onChangeMessageRegex: function () {
       if (this.messageRegexSetting)
         this.messageRegex = new RegExp(this.messageFilter, 'u');
+      this.storeSettings();
     },
     onNameCloseClick: function () {
       this.newTabName = this.tabName;
@@ -280,6 +341,7 @@ export default {
     },
     onLevelClicked: function (selectedLevel) {
       this.logLevelsSelected = selectedLevel;
+      this.storeSettings();
     },
     onSwitchChanged: function () {
       if (this.isListenerOn) {
@@ -315,6 +377,7 @@ export default {
       }
     },
     setWrap: function (on) {
+      this.softWrap = on;
       this.viewer.session.setUseWrapMode(on);
     },
     handleResize() {
