@@ -85,6 +85,7 @@
             isMain="false"
             v-bind:fontSize="fontSize"
             v-bind:timestamp="sdbTimestamp"
+            @storeInfo="storeTabInfo"
           />
         </v-tab-item>
       </v-tabs-items>
@@ -146,7 +147,6 @@ export default {
     sdbTimestamp: true,
     fontSize: 15,
     fontSizeList: [13, 15, 17, 19, 21, 23],
-    increamentalId: 0,
     tabs: [],
     currentItem: 'tab-main',
     switchListen: false
@@ -155,6 +155,7 @@ export default {
     this.stateListener = new StateListener(ipcRenderer);
     this.stateListener.registerListener(this.onStateReceived);
     this.restoreSettings();
+    this.restoreTabInfo();
   },
   watch: {
     sdbClearStart: function () {
@@ -162,9 +163,18 @@ export default {
     },
     sdbTimestamp: function () {
       this.storeSettings();
-    },
+    }
   },
   methods: {
+    storeTabInfo: function () {
+      store.set('tabInfo', this.tabs);
+    },
+    restoreTabInfo: function () {
+      let tabInfo = store.get('tabInfo');
+
+      if (tabInfo)
+        this.tabs = tabInfo;
+    },
     storeSettings: function () {
       let settings = {
         fontSize: this.fontSize,
@@ -215,7 +225,7 @@ export default {
       }
     },
     getNewTabId: function () {
-      return this.increamentalId++;
+      return Date.now().toString();
     },
     onFontUpButtonClick: function () {
       for (let i = 0; i < this.fontSizeList.length; i++) {
@@ -246,10 +256,13 @@ export default {
     },
     createNewTab: function () {
       let id = this.getNewTabId();
-      this.tabs.push({id: id, name: "tab-" + id});
+      let name = "tab-" + id.slice(id.length-4);
+      this.tabs.push({id: id, name: name});
+      this.storeTabInfo();
     },
     closeTab: function (index) {
       this.tabs.splice(index, 1);
+      this.storeTabInfo();
     },
     powerOff: function () {
       this.switchListen = false;

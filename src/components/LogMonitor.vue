@@ -272,6 +272,7 @@ export default {
     onNameSaveClick: function () {
       let str = this.newTabName;
       this.$emit('update:tabName', str);
+      this.$emit('storeInfo', true);
       this.dialogForTag = false;
     },
     onClearClick: function () {
