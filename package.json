@@ -1,7 +1,10 @@
 {
   "name": "tviewer",
   "version": "1.0.0",
-  "private": true,
+  "author": "Jeong Seongmoon msalt.net",
+  "homepage": "https://github.com/msaltnet/T.Viewer",
+  "description": "Cross Platform Tizen Log Viewer - T.Viewer",
+  "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service electron:serve",
     "build": "vue-cli-service electron:build",
