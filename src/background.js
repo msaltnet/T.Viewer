@@ -10,9 +10,9 @@ import LogService from './LogService'
 import SdbManager from './SdbManager'
 import template from './menuTemplate'
 import path from 'path'
+import windowStateKeeper from 'electron-window-state';
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
@@ -31,8 +31,17 @@ function createWindow () {
             iconPath = path.join(__dirname, '../../tviewer.png');
     }
 
+    // Load the previous state with fallback to defaults
+    let mainWindowState = windowStateKeeper({
+        defaultWidth: 1024,
+        defaultHeight: 768
+    });
+
     win = new BrowserWindow({
-        width: 1024, height: 700,
+        'x': mainWindowState.x,
+        'y': mainWindowState.y,
+        'width': mainWindowState.width,
+        'height': mainWindowState.height,
         webPreferences: {
             nodeIntegration: true
         },
@@ -42,6 +51,7 @@ function createWindow () {
     win.once('ready-to-show', () => {
         win.show()
     })
+    mainWindowState.manage(win);
 
     if (process.env.WEBPACK_DEV_SERVER_URL) {
         // Load the url of the dev server if in development mode

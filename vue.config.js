@@ -6,7 +6,7 @@ module.exports = {
     electronBuilder: {
       builderOptions: {
         appId: 't.viewer',
-        asar: false,
+        asar: true,
         productName: 'T.Veiwer',
         win: {
           target: [
