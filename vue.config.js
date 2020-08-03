@@ -5,7 +5,7 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       builderOptions: {
-        appId: 't.viewer',
+        appId: 'tviewer',
         asar: true,
         productName: 'T.Veiwer',
         win: {
@@ -17,6 +17,7 @@ module.exports = {
               ],
             },
           ],
+          artifactName: 'tviewer-setup-${version}.${ext}',
           icon: 'assets/icons/icon.ico'
         },
         linux: {
@@ -28,6 +29,7 @@ module.exports = {
               ],
             },
           ],
+          artifactName: 'tviewer-setup-${version}.${ext}',
           icon: 'assets/icons/icon.png'
         },
       },
