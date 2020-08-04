@@ -148,7 +148,7 @@ export default {
     sdbClearStart: true,
     sdbTimestamp: true,
     fontSize: 15,
-    fontSizeList: [13, 15, 17, 19, 21, 23],
+    fontSizeList: [9, 11, 13, 15, 17, 19, 21, 23, 25, 27],
     tabs: [],
     currentItem: 'tab-main',
     switchListen: false
