@@ -67,11 +67,10 @@ export default class LogService {
 
     setPower(on, afterClear, timestamp) {
         if (!this.sdbManager) {
-            console.error('Invaild sdbManager');
+            // console.error('Invaild sdbManager');
             return;
         }
 
-        // console.log('setPower :' + on);
         if (on)
             this.sdbManager.startDlog(afterClear, timestamp);
         else
@@ -93,7 +92,6 @@ export default class LogService {
     }
 
     sendStateMessage(data) {
-        console.log(data);
         this.sendMessage(data, this.stateListenerMap);
     }
 }

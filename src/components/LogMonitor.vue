@@ -262,12 +262,10 @@ export default {
         messageFilter: this.messageFilter
       };
       store.set(key, settings);
-      console.log(settings);
     },
     restoreSettings: function () {
       let key = this.tabId;
       let settings = store.get(key);
-      console.log(settings);
 
       if (!settings)
         return;
@@ -303,7 +301,6 @@ export default {
       this.tagPosition = timestamp ? TAG_POSITION_WITH_TIMESTAMP : TAG_POSITION;
     },
     onChangeControlButton: function () {
-      console.log(this.controlButtonStates);
       if (this.controlButtonStates.indexOf(0) != -1)
         this.setWrap(true);
       else

@@ -51,7 +51,6 @@ export default class SdbManager {
     }
 
     checkDevice() {
-        console.log('Checking');
         if (this.isCheckingDevice || this.isRunning)
             return;
 
@@ -79,13 +78,11 @@ export default class SdbManager {
     }
 
     onCheckingError(data) {
-        console.log(`error: ${data}`);
         this.state = this.const.STATE_ERROR;
         this._stateListener('Error');
     }
 
     onCheckingTerminated() {
-        console.log(`onCheckingTerminated`);
         this.isCheckingDevice = false;
     }
 
@@ -139,14 +136,14 @@ export default class SdbManager {
     }
 
     onTerminatedEvent(code) {
-        console.log(`onTerminate ${code}`);
+        // console.log(`onTerminate ${code}`);
         this.sdb = null;
         this.isRunning = false;
         this._terminatedCallback(code);
     }
 
     onErrorEvent(data) {
-        console.log(`onError ${data}`);
+        // console.log(`onError ${data}`);
         this.isRunning = false;
         this._errorCallback(data);
     }
