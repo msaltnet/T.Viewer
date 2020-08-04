@@ -29,7 +29,7 @@ module.exports = {
               ],
             },
           ],
-          artifactName: 'tviewer-setup-${version}.${ext}',
+          artifactName: 'tviewer-${version}.${ext}',
           icon: 'assets/icons/icon.png'
         },
       },
