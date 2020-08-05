@@ -249,6 +249,9 @@ export default {
     window.addEventListener('resize', this.handleResize);
     this.restoreSettings();
   },
+  destroyed: function() {
+    store.delete(this.tabId);
+  },
   methods: {
     storeSettings: function () {
       let key = this.tabId;
