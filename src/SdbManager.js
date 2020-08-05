@@ -77,7 +77,7 @@ export default class SdbManager {
         this._stateListener(message);
     }
 
-    onCheckingError(data) {
+    onCheckingError() {
         this.state = this.const.STATE_ERROR;
         this._stateListener('Error');
     }
