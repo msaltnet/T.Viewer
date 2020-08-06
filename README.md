@@ -4,11 +4,24 @@
 
 Cross Platform Tizen Log Viewer T.Viewer를 소개합니다. 타이젠의 `dlog` 메시지를 보다 쉽고 편하게 확인 할 수 있는 데스크탑 어플리케이션입니다. 사용중 불편 사항, 개선 의견, 버그 신고는 [이슈](https://github.com/msaltnet/T.Viewer/issues)를 생성해 주세요. 소스 코드는 MIT 라이센스로 모두에게 공개되어 있습니다. 
 
-// Main Screenshot
+![T.Viewer Screenshot](https://user-images.githubusercontent.com/9311990/89435285-a35fbb80-d77f-11ea-9b78-02d1e29a2390.PNG)
 
-## 주요 기능 및 사용법
-타겟 디바이스와의 SDB 연결을 먼저 확인하세요!
+## 설치하기
+### 리눅스
+`tviewer-setup-{version}.AppImage` 다운로드 후 실행
 
+### 윈도우
+`tviewer-setup-{version}.exe` 다운로드 후 실행하여 설치 후 실행
+
+[주요 기능 및 사용법](https://github.com/msaltnet/T.Viewer/wiki/%EC%A3%BC%EC%9A%94-%EA%B8%B0%EB%8A%A5-%EB%B0%8F-%EC%82%AC%EC%9A%A9%EB%B2%95)
+
+## 사용법
+❗ **타겟 디바이스와의 SDB 연결을 먼저 확인하세요!**
+
+![](https://user-images.githubusercontent.com/9311990/89434866-0ac93b80-d77f-11ea-8edf-dcea680d6055.gif)
+
+1. Connection State Indicator
+   - 전원 스위치와 연계 동작
 1. Log Level Filter
    - Verbose/Debug/Info/Warning/Error/Fatal
    - 선택된 level을 포함한 상위 level을 출력
@@ -21,6 +34,10 @@ Cross Platform Tizen Log Viewer T.Viewer를 소개합니다. 타이젠의 `dlog`
    - 정규식 지원
 1. Multi-Tab View
    - 각각의 독립된 탭 뷰 제공
+1. Setting
+   - 글자 크기 조절
+   - dlog 버퍼 삭제 후 실행
+   - dlog timestamp 출력
 
 ## 프로젝트 참여 방법
 다양한 방법으로 프로젝트에 참여가 가능합니다.
@@ -30,11 +47,25 @@ Cross Platform Tizen Log Viewer T.Viewer를 소개합니다. 타이젠의 `dlog`
 직접 코드를 수정하시고 싶으시다면, 아래 가이드를 참고해주세요.
 - [빌드하기](https://github.com/msaltnet/T.Viewer/wiki/%EB%B9%8C%EB%93%9C%ED%95%98%EA%B8%B0)
 
+![Test Result](https://user-images.githubusercontent.com/9311990/89435160-77443a80-d77f-11ea-8b32-338b8bdfbc3d.PNG)
+
 ## 라이센스
 본 프로젝트는 [MIT 라이센스](https://github.com/msaltnet/T.Viewer/blob/master/LICENSE)의 오픈소스 프로젝트 입니다.
 
-## Features and User Guide
-Check SDB connection with target device first.
+## Installation
+### Linux
+`tviewer-setup-{version}.AppImage` download and run
+
+### Windows
+`tviewer-setup-{version}.exe` download and install
+[Features and User Guide](https://github.com/msaltnet/T.Viewer/wiki/Features-and-User-Guide)
+
+## User Guide
+❗ Check SDB connection with target device first.
+![](https://user-images.githubusercontent.com/9311990/89434866-0ac93b80-d77f-11ea-8edf-dcea680d6055.gif)
+
+1. Connection State Indicator
+   - Connected also with power switch
 1. Log Level Filter
    - Verbose/Debug/Info/Warning/Error/Fatal
    - Output the upper level including the selected level
@@ -47,6 +78,10 @@ Check SDB connection with target device first.
    - Regular expression support
 1. Multi-Tab View
    - Independent filter option for each tab
+1. Setting
+   - Font size
+   - After clear dlog buffer
+   - dlog timestamp print
 
 ## Contributing
 There are many ways in which you can participate in the project, for example:
@@ -56,6 +91,8 @@ There are many ways in which you can participate in the project, for example:
 
 If you are interested in fixing issues and contributing directly to the code base, please see the following:
 - [Build and Run](https://github.com/msaltnet/T.Viewer/wiki/Build-and-Run)
+
+![Test Result](https://user-images.githubusercontent.com/9311990/89435160-77443a80-d77f-11ea-8b32-338b8bdfbc3d.PNG)
 
 ## License
 Licensed under the MIT license.
