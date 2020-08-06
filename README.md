@@ -64,7 +64,6 @@ Cross Platform Tizen Log Viewer T.Viewer를 소개합니다. **타이젠의 `dlo
 
 ## User Guide
 ❗ Check SDB connection with target device first.
-![](https://user-images.githubusercontent.com/9311990/89434866-0ac93b80-d77f-11ea-8edf-dcea680d6055.gif)
 
 1. Connection State Indicator
    - Connected also with power switch
@@ -93,8 +92,6 @@ There are many ways in which you can participate in the project, for example:
 
 If you are interested in fixing issues and contributing directly to the code base, please see the following:
 - [Build and Run](https://github.com/msaltnet/T.Viewer/wiki/Build-and-Run)
-
-![Test Result](https://user-images.githubusercontent.com/9311990/89435160-77443a80-d77f-11ea-8b32-338b8bdfbc3d.PNG)
 
 ## License
 Licensed under the MIT license.
