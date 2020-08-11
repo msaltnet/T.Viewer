@@ -355,6 +355,8 @@ export default {
         let contents = msg.split(this.newLineChar);
 
         contents.map(line => {
+          line = line.replace("\u001B[31;1m", "");
+          line = line.replace("\u001B[33;1m", "");
           return {
             show: this.filterLogLevel(line) && this.filterTag(line) && this.filterMessage(line),
             line: line
