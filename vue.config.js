@@ -7,7 +7,7 @@ module.exports = {
       builderOptions: {
         appId: 'tviewer',
         asar: true,
-        productName: 'T.Veiwer',
+        productName: 'T.Viewer',
         win: {
           target: [
             {
