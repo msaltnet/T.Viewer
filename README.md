@@ -54,6 +54,9 @@ Cross Platform Tizen Log Viewer T.Viewer를 소개합니다. **타이젠의 `dlo
 ## 라이센스
 본 프로젝트는 [MIT 라이센스](https://github.com/msaltnet/T.Viewer/blob/master/LICENSE)의 오픈소스 프로젝트 입니다.
 
+## (Eng) T.Viewer - Tizen Log Viewer
+T.Viewer is open source cross-platform Tizen Log Viewer. **It provides simple and easy way to view Tizen `dlog` message on desktop.**
+
 ## Installation
 ### Linux
 `tviewer-setup-{version}.AppImage` download and run
