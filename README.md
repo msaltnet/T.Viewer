@@ -4,7 +4,7 @@
 [![license](https://img.shields.io/github/license/msaltnet/T.Viewer.svg?style=flat-square)](https://github.com/msaltnet/T.Viewer/blob/master/LICENSE)
 ![language](https://img.shields.io/github/languages/top/msaltnet/T.Viewer.svg?style=flat-square&colorB=green)
 
-Cross Platform Tizen Log Viewer T.Viewer를 소개합니다. **타이젠의 `dlog` 메시지를 보다 쉽고 편하게 확인 할 수 있는 데스크탑 어플리케이션입니다.** 사용중 불편 사항, 개선 의견, 버그 신고는 [이슈](https://github.com/msaltnet/T.Viewer/issues)를 생성해 주세요. 소스 코드는 MIT 라이센스로 모두에게 공개되어 있습니다. 
+Cross Platform [Tizen](https://www.tizen.org/) Log Viewer T.Viewer를 소개합니다. **타이젠의 `dlog` 메시지를 보다 쉽고 편하게 확인 할 수 있는 데스크탑 어플리케이션입니다.** 사용중 불편 사항, 개선 의견, 버그 신고는 [이슈](https://github.com/msaltnet/T.Viewer/issues)를 생성해 주세요. 소스 코드는 MIT 라이센스로 모두에게 공개되어 있습니다. 
 
 ![T.Viewer Screenshot](https://user-images.githubusercontent.com/9311990/89435285-a35fbb80-d77f-11ea-9b78-02d1e29a2390.PNG)
 
@@ -53,6 +53,9 @@ Cross Platform Tizen Log Viewer T.Viewer를 소개합니다. **타이젠의 `dlo
 
 ## 라이센스
 본 프로젝트는 [MIT 라이센스](https://github.com/msaltnet/T.Viewer/blob/master/LICENSE)의 오픈소스 프로젝트 입니다.
+
+## (Eng) T.Viewer - Tizen Log Viewer
+T.Viewer is open source cross-platform [Tizen](https://www.tizen.org/) Log Viewer. **It provides simple and easy way to view Tizen `dlog` message on desktop.**
 
 ## Installation
 ### Linux
