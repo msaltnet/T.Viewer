@@ -109,6 +109,7 @@ import StateListener from './StateListener';
 import { ipcRenderer } from 'electron';
 import Store from './ElectronStoreWrapper';
 
+const keyEventList = ['q', 'w', 'e', 'space'];
 const store = new Store();
 const POWER_EVENT_CHANNEL = "change-power";
 const STATE_CHIP_COLOR = {
@@ -256,10 +257,23 @@ export default {
       }
       ipcRenderer.send(POWER_EVENT_CHANNEL, command);
     },
+    onKeyEvent(event) {
+      if (!keyEventList.includes(event))
+        return;
+
+      for (let i = 0; i < this.tabs.length; i++) {
+        if (this.tabs[i].id == this.currentItem) {
+          this.tabs[i].keyEvent[event] = !this.tabs[i].keyEvent[event];
+          return;
+        }
+      }
+    },
     createNewTab: function () {
       let id = this.getNewTabId();
       let name = "tab-" + id.slice(id.length-4);
-      this.tabs.push({id: id, name: name});
+      let keyEvent = {};
+      keyEventList.forEach(element => keyEvent[element] = false);
+      this.tabs.push({id: id, name: name, keyEvent: keyEvent});
       this.storeTabInfo();
     },
     closeTab: function (index) {

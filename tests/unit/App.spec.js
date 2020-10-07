@@ -127,6 +127,14 @@ describe('App.vue', () => {
             let before = vm.tabs.length;
             vm.createNewTab();
             expect(vm.tabs.length).toEqual(before+1);
+            let last = vm.tabs.pop();
+            expect(last.id).not.toEqual(null);
+            expect(last.name).not.toEqual(null);
+            expect(last.keyEvent).not.toEqual(null);
+            expect(last.keyEvent.q).not.toEqual(null);
+            expect(last.keyEvent.w).not.toEqual(null);
+            expect(last.keyEvent.e).not.toEqual(null);
+            expect(last.keyEvent.space).not.toEqual(null);
         })
 
         it('should remove a tab correctly when createNewTab is called', () => {
@@ -184,4 +192,39 @@ describe('App.vue', () => {
             expect(vm.switchListen).toEqual(false);
         })
     })
+
+    describe('onKeyEvent', () => {
+        it('should change correct keyEvent props when called', () => {
+            const vm = shallowMount(App).vm;
+            vm.tabs = [
+                { id: 'mango', keyEvent: { q: false, w: false, e: false, space: true } },
+                { id: 'banana', keyEvent: { q: true, w: true, e: true, space: false } }
+            ];
+            vm.currentItem = 'mango';
+            vm.onKeyEvent('w');
+            expect(vm.tabs[0].keyEvent.w).toEqual(true);
+            vm.onKeyEvent('space');
+            expect(vm.tabs[0].keyEvent.space).toEqual(false);
+
+            vm.currentItem = 'banana';
+            vm.onKeyEvent('space');
+            expect(vm.tabs[1].keyEvent.space).toEqual(true);
+            vm.onKeyEvent('q');
+            expect(vm.tabs[1].keyEvent.q).toEqual(false);
+        })
+
+        it('should not change keyEvent props when called with invaild event', () => {
+            const vm = shallowMount(App).vm;
+            vm.tabs = [
+                { id: 'mango', keyEvent: { q: false, w: false, e: false, space: true, plus: true, minus: true } },
+                { id: 'banana', keyEvent: { q: true, w: true, e: true, space: false, plus: false, minus: false } }
+            ];
+            vm.currentItem = 'mango';
+            vm.onKeyEvent('wq');
+            expect(vm.tabs[0].keyEvent.w).toEqual(false);
+            vm.onKeyEvent('plusa');
+            expect(vm.tabs[0].keyEvent.plus).toEqual(true);
+        })
+    })
+
 })
