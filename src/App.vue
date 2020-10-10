@@ -53,7 +53,7 @@
           :href="'#tab-main'"
         >MAIN</v-tab>
 
-        <v-tab v-for="(tab, i) in tabs" :key="tab.id" :title="tab.name" :href="'#tab' + tab.id">
+        <v-tab v-for="(tab, i) in tabs" :key="tab.id" :title="tab.name" :href="'#' + tab.id">
           {{ tab.name }}
           <v-btn icon class="align-self-center ml-1" @click.stop.prevent="closeTab(i)">
             <v-icon>mdi-close</v-icon>
@@ -79,7 +79,7 @@
           />
         </v-tab-item>
 
-        <v-tab-item v-for="tab in tabs" :key="tab.id" :value="'tab' + tab.id" >
+        <v-tab-item v-for="tab in tabs" :key="tab.id" :value="tab.id" >
           <LogMonitor
             v-bind:listenerId="'listener-' + tab.id"
             v-bind:tabId="tab.id"
@@ -201,8 +201,16 @@ export default {
     restoreTabInfo: function () {
       let tabInfo = store.get('tabInfo');
 
-      if (tabInfo)
+      if (tabInfo) {
         this.tabs = tabInfo;
+        this.tabs.forEach(tab => {
+          if (!tab.keyEvent) {
+            let keyEvent = {};
+            keyEventList.forEach(element => keyEvent[element] = false);
+            tab.keyEvent = keyEvent;
+          }
+        });
+      }
     },
     storeSettings: function () {
       let settings = {
@@ -295,7 +303,7 @@ export default {
       }
     },
     createNewTab: function () {
-      let id = this.getNewTabId();
+      let id = "tab" + this.getNewTabId();
       let name = "tab-" + id.slice(id.length-4);
       let keyEvent = {};
       keyEventList.forEach(element => keyEvent[element] = false);
