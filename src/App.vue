@@ -108,6 +108,7 @@ import Settings from './components/Settings';
 import StateListener from './StateListener';
 import { ipcRenderer } from 'electron';
 import Store from './ElectronStoreWrapper';
+import Mousetrap from "mousetrap";
 
 const keyEventList = ['q', 'w', 'e', 'space'];
 const store = new Store();
@@ -155,10 +156,35 @@ export default {
     switchListen: false
   }),
   created: function() {
+    var self = this;
     this.stateListener = new StateListener(ipcRenderer);
     this.stateListener.registerListener(this.onStateReceived);
     this.restoreSettings();
     this.restoreTabInfo();
+    Mousetrap.bind('ctrl+q', function() {
+        self.onKeyEvent('q');
+        return false;
+    });
+    Mousetrap.bind('ctrl+w', function() {
+        self.onKeyEvent('w');
+        return false;
+    });
+    Mousetrap.bind('ctrl+e', function() {
+        self.onKeyEvent('e');
+        return false;
+    });
+    Mousetrap.bind('ctrl+space', function() {
+        self.onKeyEvent('space');
+        return false;
+    });
+    Mousetrap.bind('ctrl+=', function() {
+        self.onFontUpButtonClick();
+        return false;
+    });
+    Mousetrap.bind('ctrl+-', function() {
+        self.onFontDownButtonClick();
+        return false;
+    });
   },
   watch: {
     sdbClearStart: function () {
@@ -257,7 +283,7 @@ export default {
       }
       ipcRenderer.send(POWER_EVENT_CHANNEL, command);
     },
-    onKeyEvent(event) {
+    onKeyEvent: function(event) {
       if (!keyEventList.includes(event))
         return;
 

@@ -2,6 +2,7 @@ import App from '@/App.vue'
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 import { ipcRenderer } from 'electron';
+import Mousetrap from "mousetrap";
 
 // Utilities
 import {
@@ -197,8 +198,8 @@ describe('App.vue', () => {
         it('should change correct keyEvent props when called', () => {
             const vm = shallowMount(App).vm;
             vm.tabs = [
-                { id: 'mango', keyEvent: { q: false, w: false, e: false, space: true } },
-                { id: 'banana', keyEvent: { q: true, w: true, e: true, space: false } }
+                { id: 'mango', keyEvent: { q: false, w: false, e: false, space: true} },
+                { id: 'banana', keyEvent: { q: true, w: true, e: true, space: false} }
             ];
             vm.currentItem = 'mango';
             vm.onKeyEvent('w');
@@ -216,15 +217,66 @@ describe('App.vue', () => {
         it('should not change keyEvent props when called with invaild event', () => {
             const vm = shallowMount(App).vm;
             vm.tabs = [
-                { id: 'mango', keyEvent: { q: false, w: false, e: false, space: true, plus: true, minus: true } },
-                { id: 'banana', keyEvent: { q: true, w: true, e: true, space: false, plus: false, minus: false } }
+                { id: 'mango', keyEvent: { q: false, w: false, e: false, space: true } },
+                { id: 'banana', keyEvent: { q: true, w: true, e: true, space: false } }
             ];
             vm.currentItem = 'mango';
             vm.onKeyEvent('wq');
             expect(vm.tabs[0].keyEvent.w).toEqual(false);
-            vm.onKeyEvent('plusa');
-            expect(vm.tabs[0].keyEvent.plus).toEqual(true);
+            vm.onKeyEvent('spacea');
+            expect(vm.tabs[0].keyEvent.space).toEqual(true);
         })
     })
 
+    describe('Mousetrap', () => {
+        it('should call onKeyEvent with correct parameter when each binded callback called', () => {
+            const vm = shallowMount(App).vm;
+            var callbackForQ = null;
+            var callbackForW = null;
+            var callbackForE = null;
+            var callbackForSpace = null;
+            var callbackForPlus = null;
+            var callbackForMinus = null;
+            var bindCalls = Mousetrap.bind.mock.calls;
+            vm.onKeyEvent = jest.fn();
+            // capture last called callback
+            for (var cb in bindCalls) {
+                if (bindCalls[cb][0] == 'ctrl+q') {
+                    callbackForQ = bindCalls[cb][1];
+                } else if (bindCalls[cb][0] == 'ctrl+w') {
+                    callbackForW = bindCalls[cb][1];
+                } else if (bindCalls[cb][0] == 'ctrl+e') {
+                    callbackForE = bindCalls[cb][1];
+                } else if (bindCalls[cb][0] == 'ctrl+space') {
+                    callbackForSpace = bindCalls[cb][1];
+                } else if (bindCalls[cb][0] == 'ctrl+=') {
+                    callbackForPlus = bindCalls[cb][1];
+                } else if (bindCalls[cb][0] == 'ctrl+-') {
+                    callbackForMinus = bindCalls[cb][1];
+                }
+            }
+            callbackForQ();
+            expect(vm.onKeyEvent).toBeCalledWith(`q`);
+
+            vm.onKeyEvent = jest.fn();
+            callbackForW();
+            expect(vm.onKeyEvent).toBeCalledWith(`w`);
+
+            vm.onKeyEvent = jest.fn();
+            callbackForE();
+            expect(vm.onKeyEvent).toBeCalledWith(`e`);
+
+            vm.onKeyEvent = jest.fn();
+            callbackForSpace();
+            expect(vm.onKeyEvent).toBeCalledWith(`space`);
+
+            vm.onFontUpButtonClick = jest.fn();
+            callbackForPlus();
+            expect(vm.onFontUpButtonClick).toBeCalled();
+
+            vm.onFontDownButtonClick = jest.fn();
+            callbackForMinus();
+            expect(vm.onFontDownButtonClick).toBeCalled();
+        })
+    })
 })
