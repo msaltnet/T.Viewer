@@ -87,6 +87,10 @@
             isMain="false"
             v-bind:fontSize="fontSize"
             v-bind:timestamp="sdbTimestamp"
+            v-bind:keyEventQ="tab.keyEvent.q"
+            v-bind:keyEventW="tab.keyEvent.w"
+            v-bind:keyEventE="tab.keyEvent.e"
+            v-bind:keyEventSpace="tab.keyEvent.space"
             @storeInfo="storeTabInfo"
           />
         </v-tab-item>

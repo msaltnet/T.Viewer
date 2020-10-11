@@ -43,41 +43,6 @@ describe('LogMonitor.vue', () => {
     expect(vm.logListener.unregisterListener).toBeCalledTimes(1);
   })
 
-  it('should call setWrap correctly when onChangeControlButton is called', () => {
-    const wrapper = mount(LogMonitor, {
-      localVue,
-      vuetify,
-    })
-    const vm = wrapper.vm;
-    vm.setWrap = jest.fn();
-    vm.controlButtonStates = [0];
-    vm.onChangeControlButton();
-    expect(vm.setWrap).toBeCalledWith(true);
-
-    vm.setWrap = jest.fn();
-    vm.controlButtonStates = [1];
-    vm.onChangeControlButton();
-    expect(vm.setWrap).toBeCalledWith(false);
-  })
-
-  it('should set autoScroll correctly when onChangeControlButton is called', () => {
-    const wrapper = mount(LogMonitor, {
-      localVue,
-      vuetify,
-    })
-    const vm = wrapper.vm;
-    vm.setWrap = jest.fn();
-    vm.autoScroll = true;
-    vm.controlButtonStates = [0];
-    vm.onChangeControlButton();
-    expect(vm.autoScroll).toEqual(false);
-
-    vm.autoScroll = false;
-    vm.controlButtonStates = [1];
-    vm.onChangeControlButton();
-    expect(vm.autoScroll).toEqual(true);
-  })
-
   it('should create tagRegex instance when onChangeTagRegex is called', () => {
     const wrapper = mount(LogMonitor, {
       localVue,
@@ -702,6 +667,88 @@ describe('LogMonitor.vue', () => {
         expect(vm.filterMessage(msgOrange)).toEqual(false);
         expect(vm.filterMessage(msgMonkeyBanana)).toEqual(true);
       })
+    })
+  })
+
+  describe('Control Button', () => {
+    const BTN_INDEX_AUTO_SCROLL = 0;
+    const BTN_INDEX_WRAP = 1;
+
+    it('should call setWrap correctly when onChangeControlButton is called', () => {
+      const wrapper = mount(LogMonitor, {
+        localVue,
+        vuetify,
+      })
+      const vm = wrapper.vm;
+      vm.setWrap = jest.fn();
+      vm.controlButtonStates = [0];
+      vm.onChangeControlButton();
+      expect(vm.setWrap).toBeCalledWith(true);
+
+      vm.setWrap = jest.fn();
+      vm.controlButtonStates = [1];
+      vm.onChangeControlButton();
+      expect(vm.setWrap).toBeCalledWith(false);
+    })
+
+    it('should set autoScroll correctly when onChangeControlButton is called', () => {
+      const wrapper = mount(LogMonitor, {
+        localVue,
+        vuetify,
+      })
+      const vm = wrapper.vm;
+      vm.setWrap = jest.fn();
+      vm.autoScroll = true;
+      vm.controlButtonStates = [0];
+      vm.onChangeControlButton();
+      expect(vm.autoScroll).toEqual(false);
+
+      vm.autoScroll = false;
+      vm.controlButtonStates = [1];
+      vm.onChangeControlButton();
+      expect(vm.autoScroll).toEqual(true);
+    })
+
+    it('should set button state when setToggleButton is called', () => {
+      const wrapper = mount(LogMonitor, {
+        localVue,
+        vuetify,
+      })
+      const vm = wrapper.vm;
+      vm.controlButtonStates = [BTN_INDEX_AUTO_SCROLL];
+      vm.setToggleButton(BTN_INDEX_AUTO_SCROLL, false);
+      expect(vm.controlButtonStates.indexOf(BTN_INDEX_AUTO_SCROLL)).toEqual(-1);
+
+      vm.setToggleButton(BTN_INDEX_AUTO_SCROLL, true);
+      expect(vm.controlButtonStates.indexOf(BTN_INDEX_AUTO_SCROLL)).not.toEqual(-1);
+
+      vm.controlButtonStates = [BTN_INDEX_WRAP];
+      vm.setToggleButton(BTN_INDEX_WRAP, false);
+      expect(vm.controlButtonStates.indexOf(BTN_INDEX_WRAP)).toEqual(-1);
+
+      vm.controlButtonStates = [BTN_INDEX_WRAP];
+      vm.setToggleButton(BTN_INDEX_WRAP, true);
+      expect(vm.controlButtonStates.indexOf(BTN_INDEX_WRAP)).not.toEqual(-1);
+    })
+
+    it('should set button state when toggleControlButton is called', () => {
+      const wrapper = mount(LogMonitor, {
+        localVue,
+        vuetify,
+      })
+      const vm = wrapper.vm;
+      vm.controlButtonStates = [BTN_INDEX_AUTO_SCROLL, BTN_INDEX_WRAP];
+      vm.toggleControlButton(BTN_INDEX_AUTO_SCROLL);
+      expect(vm.controlButtonStates.indexOf(BTN_INDEX_AUTO_SCROLL)).toEqual(-1);
+
+      vm.toggleControlButton(BTN_INDEX_WRAP);
+      expect(vm.controlButtonStates.indexOf(BTN_INDEX_WRAP)).toEqual(-1);
+
+      vm.toggleControlButton(BTN_INDEX_AUTO_SCROLL);
+      expect(vm.controlButtonStates.indexOf(BTN_INDEX_AUTO_SCROLL)).not.toEqual(-1);
+
+      vm.toggleControlButton(BTN_INDEX_WRAP);
+      expect(vm.controlButtonStates.indexOf(BTN_INDEX_WRAP)).not.toEqual(-1);
     })
   })
 })

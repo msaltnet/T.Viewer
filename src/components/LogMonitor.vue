@@ -59,10 +59,10 @@
             <v-btn text
               v-bind="attrs"
               v-on="on">
-              <v-icon>mdi-wrap</v-icon>
+              <v-icon>mdi-format-align-bottom</v-icon>
             </v-btn>
           </template>
-          <span>Soft Wrap</span>
+          <span>Auto Scroll</span>
         </v-tooltip>
 
         <v-tooltip bottom>
@@ -70,11 +70,12 @@
             <v-btn text
               v-bind="attrs"
               v-on="on">
-              <v-icon>mdi-format-align-bottom</v-icon>
+              <v-icon>mdi-wrap</v-icon>
             </v-btn>
           </template>
-          <span>Auto Scroll</span>
+          <span>Soft Wrap</span>
         </v-tooltip>
+
       </v-btn-toggle>
 
       <v-divider class="mx-3" inset vertical></v-divider>
@@ -185,7 +186,8 @@ import AceEditor from '../AceEditor';
 import LogListener from '../LogListener';
 import { ipcRenderer } from 'electron';
 import Store from '../ElectronStoreWrapper';
-
+const BTN_INDEX_AUTO_SCROLL = 0;
+const BTN_INDEX_WRAP = 1;
 const store = new Store();
 const LOG_LEVEL_POSITION = 0;
 const LOG_LEVEL_POSITION_WITH_TIMESTAMP = 24;
@@ -193,12 +195,12 @@ const TAG_POSITION = 2;
 const TAG_POSITION_WITH_TIMESTAMP = 26;
 const APPBAR_TOOLBAR_HEIGHT = 64 + 88;
 export default {
-  props: ['tabId', 'tabName', 'isMain', 'fontSize', 'timestamp'],
+  props: ['tabId', 'tabName', 'isMain', 'fontSize', 'timestamp', 'keyEventQ', 'keyEventW', 'keyEventE', 'keyEventSpace'],
   data: function () {
     return {
       autoScroll: true,
       softWrap: false,
-      controlButtonStates: [1],
+      controlButtonStates: [BTN_INDEX_AUTO_SCROLL],
       dialog: false,
       dialogForTag: false,
       newTabName: '',
@@ -233,6 +235,20 @@ export default {
     },
     timestamp: function (timestamp) {
       this.updateTimestamp(timestamp);
+    },
+    keyEventQ: function (key) {
+      this.toggleControlButton(BTN_INDEX_AUTO_SCROLL);
+      console.log(key);
+    },
+    keyEventW: function (key) {
+      this.toggleControlButton(BTN_INDEX_WRAP);
+      console.log(key);
+    },
+    keyEventE: function (key) {
+      console.log(key);
+    },
+    keyEventSpace: function (key) {
+      console.log(key);
     }
   },
   created: function() {
@@ -274,9 +290,9 @@ export default {
         return;
 
       this.autoScroll = settings.autoScroll;
-      this.setToggleButton(1, this.autoScroll);
+      this.setToggleButton(BTN_INDEX_WRAP, this.autoScroll);
       this.setWrap(settings.softWrap);
-      this.setToggleButton(0, settings.softWrap);
+      this.setToggleButton(BTN_INDEX_AUTO_SCROLL, settings.softWrap);
       this.logLevelsSelected = settings.logLevelsSelected;
       this.tagRegexSetting = settings.tagRegexSetting;
       this.tagFilter = settings.tagFilter;
@@ -288,6 +304,16 @@ export default {
       if (this.messageRegexSetting)
         this.messageRegex = new RegExp(this.messageFilter, 'u');
     },
+    toggleControlButton: function (type) {
+      let index = this.controlButtonStates.indexOf(type);
+
+      if (index == -1) {
+        this.controlButtonStates.push(type);
+      } else {
+        this.controlButtonStates.splice(index, 1);
+      }
+      this.storeSettings();
+    },
     setToggleButton: function (type, on) {
       let index = this.controlButtonStates.indexOf(type);
 
@@ -298,6 +324,7 @@ export default {
         if (index != -1)
           this.controlButtonStates.splice(index, 1);
       }
+      this.storeSettings();
     },
     updateTimestamp: function (timestamp) {
       this.logLevelPosition = timestamp ? LOG_LEVEL_POSITION_WITH_TIMESTAMP : LOG_LEVEL_POSITION;
