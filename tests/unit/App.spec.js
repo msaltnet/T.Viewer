@@ -140,10 +140,11 @@ describe('App.vue', () => {
 
         it('should remove a tab correctly when createNewTab is called', () => {
             const vm = shallowMount(App).vm;
-            vm.tabs = ["mango", "banana"];
+            vm.tabs = [{id: "mango", name: "mango", keyEvent: { q: true, w: true, e: true, space: true }},
+                {id: "banana", name: "banana", keyEvent: { q: true, w: true, e: true, space: true }}];
             vm.closeTab(0);
             expect(vm.tabs.length).toEqual(1);
-            expect(vm.tabs[0]).toEqual("banana");
+            expect(vm.tabs[0].name).toEqual("banana");
         })
     })
 

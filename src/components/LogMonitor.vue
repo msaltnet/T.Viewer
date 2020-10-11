@@ -98,7 +98,7 @@
         color="indigo"
         v-model="isListenerOn"
         prepend-icon="mdi-download"
-        v-on:change="onSwitchChanged"
+        v-on:change="onListenSwitchChanged"
         class="mx-1"
       ></v-switch>
 
@@ -236,19 +236,17 @@ export default {
     timestamp: function (timestamp) {
       this.updateTimestamp(timestamp);
     },
-    keyEventQ: function (key) {
-      this.toggleControlButton(BTN_INDEX_AUTO_SCROLL);
-      console.log(key);
+    keyEventQ: function () {
+      this.toggleControlButtonAndState(BTN_INDEX_AUTO_SCROLL);
     },
-    keyEventW: function (key) {
-      this.toggleControlButton(BTN_INDEX_WRAP);
-      console.log(key);
+    keyEventW: function () {
+      this.toggleControlButtonAndState(BTN_INDEX_WRAP);
     },
-    keyEventE: function (key) {
-      console.log(key);
+    keyEventE: function () {
+      this.onClearClick();
     },
-    keyEventSpace: function (key) {
-      console.log(key);
+    keyEventSpace: function () {
+      this.toggleListenSwitch();
     }
   },
   created: function() {
@@ -304,14 +302,22 @@ export default {
       if (this.messageRegexSetting)
         this.messageRegex = new RegExp(this.messageFilter, 'u');
     },
-    toggleControlButton: function (type) {
+    toggleControlButtonAndState: function (type) {
       let index = this.controlButtonStates.indexOf(type);
-
+      let setState = true;
       if (index == -1) {
         this.controlButtonStates.push(type);
+        setState = true;
       } else {
         this.controlButtonStates.splice(index, 1);
+        setState = false;
       }
+
+      if (type == BTN_INDEX_WRAP)
+        this.setWrap(setState);
+      else if (type == BTN_INDEX_AUTO_SCROLL)
+        this.autoScroll = setState;
+
       this.storeSettings();
     },
     setToggleButton: function (type, on) {
@@ -370,7 +376,16 @@ export default {
       this.logLevelsSelected = selectedLevel;
       this.storeSettings();
     },
-    onSwitchChanged: function () {
+    toggleListenSwitch: function () {
+      if (!this.isListenerOn) {
+        this.isListenerOn = true;
+        this.listenerTag = this.logListener.registerListener(this.onMessageReceived);
+      } else {
+        this.isListenerOn = false;
+        this.logListener.unregisterListener(this.listenerTag);
+      }
+    },
+    onListenSwitchChanged: function () {
       if (this.isListenerOn) {
         this.listenerTag = this.logListener.registerListener(this.onMessageReceived);
       } else {

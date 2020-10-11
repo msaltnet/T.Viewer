@@ -16,32 +16,59 @@ describe('LogMonitor.vue', () => {
   beforeEach(() => {
     vuetify = new Vuetify()
   })
+  describe('LogMonitor.vue', () => {
+    it('should call registerListener when listen switch is changed to true', () => {
+      const wrapper = mount(LogMonitor, {
+        localVue,
+        vuetify,
+      })
 
-  it('should call registerListener when listen switch is changed to true', () => {
-    const wrapper = mount(LogMonitor, {
-      localVue,
-      vuetify,
+      wrapper.vm.isListenerOn = true;
+      wrapper.vm.logListener.registerListener = jest.fn();
+
+      wrapper.vm.onListenSwitchChanged();
+      expect(wrapper.vm.logListener.registerListener).toBeCalledTimes(1);
     })
 
-    wrapper.vm.isListenerOn = true;
-    wrapper.vm.logListener.registerListener = jest.fn();
+    it('should call unregisterListener when listen switch is changed to false', () => {
+      const wrapper = mount(LogMonitor, {
+        localVue,
+        vuetify,
+      })
+      const vm = wrapper.vm;
+      vm.isListenerOn = false;
+      vm.logListener.unregisterListener = jest.fn();
 
-    wrapper.vm.onSwitchChanged();
-    expect(wrapper.vm.logListener.registerListener).toBeCalledTimes(1);
-  })
-
-  it('should call unregisterListener when listen switch is changed to false', () => {
-    const wrapper = mount(LogMonitor, {
-      localVue,
-      vuetify,
+      vm.onListenSwitchChanged();
+      expect(vm.logListener.unregisterListener).toBeCalledTimes(1);
     })
-    const vm = wrapper.vm;
-    vm.isListenerOn = false;
-    vm.logListener.unregisterListener = jest.fn();
 
-    vm.onSwitchChanged();
-    expect(vm.logListener.unregisterListener).toBeCalledTimes(1);
-  })
+    it('should call registerListener when toggleListenSwitch is called and isListenerOn is false', () => {
+      const wrapper = mount(LogMonitor, {
+        localVue,
+        vuetify,
+      })
+
+      wrapper.vm.isListenerOn = false;
+      wrapper.vm.logListener.registerListener = jest.fn();
+
+      wrapper.vm.toggleListenSwitch();
+      expect(wrapper.vm.logListener.registerListener).toBeCalledTimes(1);
+    })
+
+    it('should call unregisterListener when toggleListenSwitch is called and isListenerOn is true', () => {
+      const wrapper = mount(LogMonitor, {
+        localVue,
+        vuetify,
+      })
+      const vm = wrapper.vm;
+      vm.isListenerOn = true;
+      vm.logListener.unregisterListener = jest.fn();
+
+      vm.toggleListenSwitch();
+      expect(vm.logListener.unregisterListener).toBeCalledTimes(1);
+    })
+  });
 
   it('should create tagRegex instance when onChangeTagRegex is called', () => {
     const wrapper = mount(LogMonitor, {
@@ -731,24 +758,59 @@ describe('LogMonitor.vue', () => {
       expect(vm.controlButtonStates.indexOf(BTN_INDEX_WRAP)).not.toEqual(-1);
     })
 
-    it('should set button state when toggleControlButton is called', () => {
+    it('should set button when toggleControlButtonAndState is called', () => {
       const wrapper = mount(LogMonitor, {
         localVue,
         vuetify,
       })
+      const viewerMock = {
+        session: {
+          setUseWrapMode: jest.fn()
+        }
+      }
       const vm = wrapper.vm;
+      vm.viewer = viewerMock;
       vm.controlButtonStates = [BTN_INDEX_AUTO_SCROLL, BTN_INDEX_WRAP];
-      vm.toggleControlButton(BTN_INDEX_AUTO_SCROLL);
+      vm.toggleControlButtonAndState(BTN_INDEX_AUTO_SCROLL);
       expect(vm.controlButtonStates.indexOf(BTN_INDEX_AUTO_SCROLL)).toEqual(-1);
 
-      vm.toggleControlButton(BTN_INDEX_WRAP);
+      vm.toggleControlButtonAndState(BTN_INDEX_WRAP);
       expect(vm.controlButtonStates.indexOf(BTN_INDEX_WRAP)).toEqual(-1);
 
-      vm.toggleControlButton(BTN_INDEX_AUTO_SCROLL);
+      vm.toggleControlButtonAndState(BTN_INDEX_AUTO_SCROLL);
       expect(vm.controlButtonStates.indexOf(BTN_INDEX_AUTO_SCROLL)).not.toEqual(-1);
 
-      vm.toggleControlButton(BTN_INDEX_WRAP);
+      vm.toggleControlButtonAndState(BTN_INDEX_WRAP);
       expect(vm.controlButtonStates.indexOf(BTN_INDEX_WRAP)).not.toEqual(-1);
     })
+
+    it('should set control state when toggleControlButtonAndState is called', () => {
+      const wrapper = mount(LogMonitor, {
+        localVue,
+        vuetify,
+      })
+      const viewerMock = {
+        session: {
+          setUseWrapMode: jest.fn()
+        }
+      }
+      const vm = wrapper.vm;
+      vm.viewer = viewerMock;
+      vm.autoScroll = true;
+      vm.softWrap = true;
+      vm.controlButtonStates = [BTN_INDEX_AUTO_SCROLL, BTN_INDEX_WRAP];
+      vm.toggleControlButtonAndState(BTN_INDEX_AUTO_SCROLL);
+      expect(vm.autoScroll).toEqual(false);
+
+      vm.toggleControlButtonAndState(BTN_INDEX_AUTO_SCROLL);
+      expect(vm.autoScroll).toEqual(true);
+
+      vm.toggleControlButtonAndState(BTN_INDEX_WRAP);
+      expect(vm.softWrap).toEqual(false);
+
+      vm.toggleControlButtonAndState(BTN_INDEX_WRAP);
+      expect(vm.softWrap).toEqual(true);
+    })
+
   })
 })
