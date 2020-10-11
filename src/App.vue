@@ -76,6 +76,10 @@
             isMain="true"
             v-bind:fontSize="fontSize"
             v-bind:timestamp="sdbTimestamp"
+            v-bind:keyEventQ="mainTabKeyEvent.q"
+            v-bind:keyEventW="mainTabKeyEvent.w"
+            v-bind:keyEventE="mainTabKeyEvent.e"
+            v-bind:keyEventSpace="mainTabKeyEvent.space"
           />
         </v-tab-item>
 
@@ -114,7 +118,7 @@ import { ipcRenderer } from 'electron';
 import Store from './ElectronStoreWrapper';
 import Mousetrap from "mousetrap";
 
-const keyEventList = ['q', 'w', 'e', 'space'];
+const KeyEventList = ['q', 'w', 'e', 'space'];
 const store = new Store();
 const POWER_EVENT_CHANNEL = "change-power";
 const STATE_CHIP_COLOR = {
@@ -156,6 +160,7 @@ export default {
     fontSize: 15,
     fontSizeList: [9, 11, 13, 15, 17, 19, 21, 23, 25, 27],
     tabs: [],
+    mainTabKeyEvent: {q: false, w: false, e: false, space: false},
     currentItem: 'tab-main',
     switchListen: false
   }),
@@ -165,6 +170,7 @@ export default {
     this.stateListener.registerListener(this.onStateReceived);
     this.restoreSettings();
     this.restoreTabInfo();
+
     Mousetrap.bind('ctrl+q', function() {
         self.onKeyEvent('q');
         return false;
@@ -210,7 +216,7 @@ export default {
         this.tabs.forEach(tab => {
           if (!tab.keyEvent) {
             let keyEvent = {};
-            keyEventList.forEach(element => keyEvent[element] = false);
+            KeyEventList.forEach(element => keyEvent[element] = false);
             tab.keyEvent = keyEvent;
           }
         });
@@ -296,8 +302,13 @@ export default {
       ipcRenderer.send(POWER_EVENT_CHANNEL, command);
     },
     onKeyEvent: function(event) {
-      if (!keyEventList.includes(event))
+      if (!KeyEventList.includes(event))
         return;
+
+      if (this.currentItem == 'tab-main') {
+        this.mainTabKeyEvent[event] = !this.mainTabKeyEvent[event];
+        return;
+      }
 
       for (let i = 0; i < this.tabs.length; i++) {
         if (this.tabs[i].id == this.currentItem) {
@@ -310,7 +321,7 @@ export default {
       let id = "tab" + this.getNewTabId();
       let name = "tab-" + id.slice(id.length-4);
       let keyEvent = {};
-      keyEventList.forEach(element => keyEvent[element] = false);
+      KeyEventList.forEach(element => keyEvent[element] = false);
       this.tabs.push({id: id, name: name, keyEvent: keyEvent});
       this.storeTabInfo();
     },
