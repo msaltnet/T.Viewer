@@ -62,7 +62,7 @@
               <v-icon>mdi-format-align-bottom</v-icon>
             </v-btn>
           </template>
-          <span>Auto Scroll</span>
+          <span>Auto Scroll<br>ctrl + q</span>
         </v-tooltip>
 
         <v-tooltip bottom>
@@ -73,17 +73,24 @@
               <v-icon>mdi-wrap</v-icon>
             </v-btn>
           </template>
-          <span>Soft Wrap</span>
+          <span>Soft Wrap<br>ctrl + w</span>
         </v-tooltip>
 
       </v-btn-toggle>
 
       <v-divider class="mx-3" inset vertical></v-divider>
 
-      <v-btn icon class="mx-1"
-        @click="onClearClick()">
-        <v-icon>mdi-delete</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon class="mx-1"
+            v-bind="attrs"
+            v-on="on"
+            @click="onClearClick()">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </template>
+        <span>Clear<br>ctrl + e</span>
+      </v-tooltip>
 
       <v-btn icon class="mx-1"
         @click="dialogForTag = !dialogForTag"
