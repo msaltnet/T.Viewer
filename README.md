@@ -40,6 +40,15 @@ Cross Platform [Tizen](https://www.tizen.org/) Log Viewer T.Viewer를 소개합�
    - 글자 크기 조절
    - dlog 버퍼 삭제 후 실행
    - dlog timestamp 출력
+1. Shortcut
+   - 글자 크기 키우기 ctrl + +
+   - 글자 크기 줄이기 ctrl + -
+   - 자동 스크롤 ctrl + q
+   - 줄바꿈 ctrl + w
+   - 화면 지우기 ctrl + e
+   - 메세지 수신 ctrl + space
+
+![shortcut](https://user-images.githubusercontent.com/9311990/96146228-0a001300-0f41-11eb-821e-4a7d27862e9d.png)
 
 ## 프로젝트 참여 방법
 다양한 방법으로 프로젝트에 참여가 가능합니다.
@@ -86,6 +95,13 @@ T.Viewer is open source cross-platform [Tizen](https://www.tizen.org/) Log Viewe
    - Font size
    - After clear dlog buffer
    - dlog timestamp print
+1. Shortcut
+   - Font size up, ctrl + +
+   - Font size down, ctrl + -
+   - Auto Scroll, ctrl + q
+   - Soft wrap ctrl + w
+   - Clear tab, ctrl + e
+   - Listen log, ctrl + space
 
 ## Contributing
 There are many ways in which you can participate in the project, for example:
