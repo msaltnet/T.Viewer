@@ -3,7 +3,7 @@
 [![Travis](https://travis-ci.org/msaltnet/T.Viewer.svg?branch=master&style=flat-square&colorB=green)](https://travis-ci.org/msaltnet/T.Viewer)
 [![license](https://img.shields.io/github/license/msaltnet/T.Viewer.svg?style=flat-square)](https://github.com/msaltnet/T.Viewer/blob/master/LICENSE)
 ![language](https://img.shields.io/github/languages/top/msaltnet/T.Viewer.svg?style=flat-square&colorB=green)
-[![Coverage Status](https://coveralls.io/repos/github/msaltnet/T.Viewer/badge.svg?branch=master)](https://coveralls.io/github/msaltnet/T.Viewer?branch=master)
+[![codecov](https://codecov.io/gh/msaltnet/T.Viewer/branch/master/graph/badge.svg?token=A3GMQL823I)](https://codecov.io/gh/msaltnet/T.Viewer)
 
 Cross Platform [Tizen](https://www.tizen.org/) Log Viewer T.Viewer를 소개합니다. **타이젠의 `dlog` 메시지를 보다 쉽고 편하게 확인 할 수 있는 데스크탑 어플리케이션입니다.** 사용중 불편 사항, 개선 의견, 버그 신고는 [이슈](https://github.com/msaltnet/T.Viewer/issues)를 생성해 주세요. 소스 코드는 MIT 라이센스로 모두에게 공개되어 있습니다. 
 
