@@ -3,6 +3,7 @@
 [![Travis](https://travis-ci.org/msaltnet/T.Viewer.svg?branch=master&style=flat-square&colorB=green)](https://travis-ci.org/msaltnet/T.Viewer)
 [![license](https://img.shields.io/github/license/msaltnet/T.Viewer.svg?style=flat-square)](https://github.com/msaltnet/T.Viewer/blob/master/LICENSE)
 ![language](https://img.shields.io/github/languages/top/msaltnet/T.Viewer.svg?style=flat-square&colorB=green)
+[![Coverage Status](https://coveralls.io/repos/github/msaltnet/T.Viewer/badge.svg?branch=master)](https://coveralls.io/github/msaltnet/T.Viewer?branch=master)
 
 Cross Platform [Tizen](https://www.tizen.org/) Log Viewer T.Viewer를 소개합니다. **타이젠의 `dlog` 메시지를 보다 쉽고 편하게 확인 할 수 있는 데스크탑 어플리케이션입니다.** 사용중 불편 사항, 개선 의견, 버그 신고는 [이슈](https://github.com/msaltnet/T.Viewer/issues)를 생성해 주세요. 소스 코드는 MIT 라이센스로 모두에게 공개되어 있습니다. 
 
@@ -40,6 +41,15 @@ Cross Platform [Tizen](https://www.tizen.org/) Log Viewer T.Viewer를 소개합�
    - 글자 크기 조절
    - dlog 버퍼 삭제 후 실행
    - dlog timestamp 출력
+1. Shortcut
+   - 글자 크기 키우기 ctrl + +
+   - 글자 크기 줄이기 ctrl + -
+   - 자동 스크롤 ctrl + q
+   - 줄바꿈 ctrl + w
+   - 화면 지우기 ctrl + e
+   - 메세지 수신 ctrl + space
+
+![shortcut](https://user-images.githubusercontent.com/9311990/96146228-0a001300-0f41-11eb-821e-4a7d27862e9d.png)
 
 ## 프로젝트 참여 방법
 다양한 방법으로 프로젝트에 참여가 가능합니다.
@@ -86,6 +96,13 @@ T.Viewer is open source cross-platform [Tizen](https://www.tizen.org/) Log Viewe
    - Font size
    - After clear dlog buffer
    - dlog timestamp print
+1. Shortcut
+   - Font size up, ctrl + +
+   - Font size down, ctrl + -
+   - Auto Scroll, ctrl + q
+   - Soft wrap ctrl + w
+   - Clear tab, ctrl + e
+   - Listen log, ctrl + space
 
 ## Contributing
 There are many ways in which you can participate in the project, for example:
