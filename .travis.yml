@@ -8,10 +8,13 @@ node_js:
 os:
   - linux
   - windows
+before_install:
+  - npm install -g codecov
 install:
   - npm install
 script:
   - npm run test && npm run build
+  - codecov
 deploy:
   provider: releases
   api_key:

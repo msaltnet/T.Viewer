@@ -1,5 +1,6 @@
 module.exports = {
   collectCoverage: true,
+  coverageDirectory: "./coverage/",
   coveragePathIgnorePatterns: ["/node_modules/", "/tests/"],
   preset: '@vue/cli-plugin-unit-jest',
   moduleNameMapper: {
