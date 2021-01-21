@@ -26,7 +26,7 @@
     "vuetify": "^2.1.0"
   },
   "devDependencies": {
-    "@mdi/font": "^5.4.55",
+    "@mdi/font": "^5.9.55",
     "@vue/cli-plugin-babel": "^4.0.0",
     "@vue/cli-plugin-eslint": "^4.0.4",
     "@vue/cli-plugin-unit-jest": "^4.0.5",

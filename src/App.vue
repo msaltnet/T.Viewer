@@ -37,7 +37,7 @@
         color="red"
         v-model="switchListen"
         v-on:change="onSwitchChange"
-        prepend-icon="mdi-power"
+        prepend-icon="mdi-connection"
         class="mx-1"
         :disabled="state!='connected'"
       ></v-switch>
