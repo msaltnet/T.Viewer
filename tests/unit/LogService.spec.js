@@ -142,6 +142,24 @@ describe('LogService', () => {
             logService.setListenerMap(mockListener, null, logService.listenerMap);
             expect(logService.listenerMap.size).toEqual(0);
         })
+
+        it('should NOT delete listener after setListenerMap called with invalid event', () => {
+            const mockIpcMain = {
+                on: jest.fn(),
+            }
+            const logService = new LogService(mockIpcMain);
+            const mockListener = {
+                sender: {
+                    id: "monkey"
+                }
+            };
+
+            logService.listenerMap.set(mockListener.sender.id, mockListener.sender);
+            expect(logService.listenerMap.size).toEqual(1);
+
+            logService.setListenerMap(null, null, logService.listenerMap);
+            expect(logService.listenerMap.size).toEqual(1);
+        })
     })
 
     describe('setPower', () => {
@@ -261,4 +279,92 @@ describe('LogService', () => {
         })
     })
 
+    describe('onListenRegister', () => {
+        it('should call setListenerMap with listenerMap', () => {
+            const mockIpcMain = {
+                on: jest.fn(),
+            }
+            const mockSdbManager = {
+                startDlog: jest.fn(),
+                stopDlog: jest.fn()
+            }
+            const logService = new LogService(mockIpcMain, mockSdbManager);
+            let mockSetListenerMap = jest.fn();
+            logService.setListenerMap = mockSetListenerMap;
+            logService.listenerMap = 'apple';
+            logService.onListenRegister('banana', 'orange');
+            expect(mockSetListenerMap).toBeCalledWith('banana', 'orange', 'apple');
+        })
+    })
+
+    describe('onStateListenRegister', () => {
+        it('should call setListenerMap with stateListenerMap', () => {
+            const mockIpcMain = {
+                on: jest.fn(),
+            }
+            const mockSdbManager = {
+                startDlog: jest.fn(),
+                stopDlog: jest.fn()
+            }
+            const logService = new LogService(mockIpcMain, mockSdbManager);
+            let mockSetListenerMap = jest.fn();
+            logService.setListenerMap = mockSetListenerMap;
+            logService.stateListenerMap = 'kiwi';
+            logService.onStateListenRegister('banana', 'orange');
+            expect(mockSetListenerMap).toBeCalledWith('banana', 'orange', 'kiwi');
+        })
+    })
+
+    describe('onError', () => {
+        it('should call sendStateMessage with "Error"', () => {
+            const mockIpcMain = {
+                on: jest.fn(),
+            }
+            const mockSdbManager = {
+                startDlog: jest.fn(),
+                stopDlog: jest.fn()
+            }
+            const logService = new LogService(mockIpcMain, mockSdbManager);
+            let mockSendStateMessage = jest.fn();
+            logService.sendStateMessage = mockSendStateMessage;
+            logService.onError();
+            expect(mockSendStateMessage).toBeCalledWith('Error');
+        })
+    })
+
+    describe('sendMessage', () => {
+        it('should call sendMessage with stateListenerMap', () => {
+            const mockIpcMain = {
+                on: jest.fn(),
+            }
+            const mockSdbManager = {
+                startDlog: jest.fn(),
+                stopDlog: jest.fn()
+            }
+            const logService = new LogService(mockIpcMain, mockSdbManager);
+            let mockSendMessage = jest.fn();
+            logService.sendMessage = mockSendMessage;
+            logService.stateListenerMap = 'kiwi';
+            logService.sendStateMessage('apple');
+            expect(mockSendMessage).toBeCalledWith('apple', 'kiwi');
+        })
+    })
+
+    describe('sendLogMessage', () => {
+        it('should call sendMessage with listenerMap', () => {
+            const mockIpcMain = {
+                on: jest.fn(),
+            }
+            const mockSdbManager = {
+                startDlog: jest.fn(),
+                stopDlog: jest.fn()
+            }
+            const logService = new LogService(mockIpcMain, mockSdbManager);
+            let mockSendMessage = jest.fn();
+            logService.sendMessage = mockSendMessage;
+            logService.listenerMap = 'apple';
+            logService.sendLogMessage('orange');
+            expect(mockSendMessage).toBeCalledWith('orange', 'apple');
+        })
+    })
 })
