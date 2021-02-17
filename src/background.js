@@ -11,8 +11,10 @@ import SdbManager from './SdbManager'
 import template from './menuTemplate'
 import path from 'path'
 import windowStateKeeper from 'electron-window-state';
+import FakeSdbManager from './FakeSdbManager'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const useFakeSdb = process.env.NODE_ENV !== 'production' && process.env.VUE_APP_MODE === 'fake'
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
@@ -109,6 +111,9 @@ app.on('ready', async () => {
     createWindow()
 
     let sdbManager = new SdbManager(spawn);
+    if (useFakeSdb) {
+        sdbManager = new FakeSdbManager();
+    }
     let logService = new LogService(ipcMain, sdbManager);
     logService.init();
 })

@@ -6,6 +6,7 @@
   "description": "Cross Platform Tizen Log Viewer - T.Viewer",
   "license": "MIT",
   "scripts": {
+    "serve-fake": "vue-cli-service electron:serve --mode fake",
     "serve": "vue-cli-service electron:serve",
     "build": "vue-cli-service electron:build",
     "test": "npm run lint && vue-cli-service test:unit",

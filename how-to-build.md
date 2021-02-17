@@ -24,6 +24,12 @@ cd T.Viewer
 npm run serve
 ```
 
+특히, 연결 기기가 없이 개발 중에는 아래 명령어를 통해, Fake 로그 생성기를 사용해서 Tizen 기기와 연결 없이도 계발할 수 있습니다.
+
+```
+npm run serve-fake
+```
+
 최종 산출물을 생성하기 위해서는 아래의 명령어를 사용하여 빌드하셔도 됩니다.
 ```
 cd T.Viewer
@@ -67,6 +73,11 @@ To test the changes you launch a development version of T.Viewer on the workspac
 ```
 cd T.Viewer
 npm run serve
+```
+
+Especially, Without Tizen target device, to test application with fake log generator you can launch fake mode.
+```
+npm run serve-fake
 ```
 
 To create excutable production.
