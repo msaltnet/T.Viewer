@@ -5,6 +5,37 @@ describe('AceEditor', () => {
     beforeEach(() => {
     })
 
+    it('should call define when init is called', () => {
+        AceEditor.init();
+        expect(ace.define).toBeCalledWith('ace/mode/log', expect.any(Function));
+        expect(ace.define).toBeCalledWith('ace/mode/log_highlight_rules', expect.any(Function));
+        console.log(ace.define.mock.calls[0][1]);
+        console.log(ace.define.mock.calls[1][0]);
+        let logCB = ace.define.mock.calls[0][1];
+        let mockRequire = jest.fn();
+        let mockInherits = jest.fn();
+        let dummyReturn = {Mode: 'orange', inherits: mockInherits, LogHighlightRules: 'apple'};
+        mockRequire.mockReturnValue(dummyReturn);
+        let mockExports = jest.fn();
+        logCB(mockRequire, mockExports);
+        mockExports.Mode();
+        expect(mockRequire).toBeCalledTimes(3)
+        expect(mockInherits).toBeCalledTimes(1);
+        expect(mockExports.Mode).toEqual(expect.any(Function));
+
+        let mockRequire2 = jest.fn();
+        let mockInherits2 = jest.fn();
+        let dummyReturn2 = {Mode: 'orange', inherits: mockInherits2, TextHighlightRules: 'banana'};
+        mockRequire2.mockReturnValue(dummyReturn2);
+        let mockExports2 = jest.fn();
+        let logHighlightCB = ace.define.mock.calls[1][1];
+        logHighlightCB(mockRequire2, mockExports2);
+        mockExports2.LogHighlightRules();
+        expect(mockRequire2).toBeCalledTimes(2)
+        expect(mockInherits2).toBeCalledTimes(1);
+        expect(mockExports2.LogHighlightRules).toEqual(expect.any(Function));
+    })
+
     it('should call setOptions with correct options when createViewer is called', () => {
         AceEditor.createViewer("mango", 100);
         let options = ace.setOptions.mock.calls[0][0];
