@@ -92,12 +92,18 @@
         <span>Clear<br>ctrl + e</span>
       </v-tooltip>
 
-      <v-btn icon class="mx-1"
-        @click="dialogForTag = !dialogForTag"
-        v-if="isMain != 'true'"
-      >
-        <v-icon>mdi-tag</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon class="mx-1"
+            v-bind="attrs"
+            v-on="on"
+            @click="dialogForTag = !dialogForTag"
+            v-if="isMain != 'true'">
+            <v-icon>mdi-tag</v-icon>
+          </v-btn>
+        </template>
+        <span>Tab Name</span>
+      </v-tooltip>
 
       <v-switch
         dense
