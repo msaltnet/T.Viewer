@@ -48,7 +48,7 @@ export default class FakeSdbManager {
     }
 
     startChecking() {
-        setInterval(this.checkDevice.bind(this), 1500);
+        setInterval(this.checkDevice.bind(this), 1000);
     }
 
     checkDevice() {
@@ -77,7 +77,7 @@ export default class FakeSdbManager {
             "+0900 "
         ].join('');
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 100; i++) {
             let random = Math.floor(Math.random() * 20);
             let index = random % this.const.LOG.length;
             if (this.withTimestamp)

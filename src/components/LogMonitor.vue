@@ -105,6 +105,20 @@
         <span>Tab Name</span>
       </v-tooltip>
 
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon class="mx-1"
+            v-bind="attrs"
+            v-on="on"
+            @click="onLoadFromMainClick()"
+            v-if="isMain != 'true'"
+            :disabled="isListenerOn">
+            <v-icon>mdi-import</v-icon>
+          </v-btn>
+        </template>
+        <span>Load from MAIN</span>
+      </v-tooltip>
+
       <v-switch
         dense
         hide-details
@@ -199,6 +213,7 @@ import AceEditor from '../AceEditor';
 import LogListener from '../LogListener';
 import { ipcRenderer } from 'electron';
 import Store from '../ElectronStoreWrapper';
+
 const BTN_INDEX_AUTO_SCROLL = 0;
 const BTN_INDEX_WRAP = 1;
 const store = new Store();
@@ -273,6 +288,9 @@ export default {
   },
   mounted: function() {
     this.viewer = AceEditor.createViewer(this.$refs.viewer, this.fontSize);
+    if (this.isMain === "true") {
+      this.$root.mainEditor = this.viewer;
+    }
     window.addEventListener('resize', this.handleResize);
     this.restoreSettings();
   },
@@ -385,6 +403,13 @@ export default {
     onClearClick: function () {
       this.viewer.setValue('');
     },
+    onLoadFromMainClick: function () {
+      this.viewer.setValue('');
+      let mainContents = this.$root.mainEditor.session.getDocument().$lines;
+      for (let line of mainContents) {
+        this.onMessageReceived(line + "\n");
+      }
+    },
     onLevelClicked: function (selectedLevel) {
       this.logLevelsSelected = selectedLevel;
       this.storeSettings();
@@ -408,7 +433,6 @@ export default {
     onMessageReceived: function (msg) {
       try {
         let contents = msg.split(this.newLineChar);
-
         contents.map(line => {
           line = line.replace("\u001B[31;1m", "");
           line = line.replace("\u001B[33;1m", "");
