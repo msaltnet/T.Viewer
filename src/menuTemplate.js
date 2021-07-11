@@ -46,7 +46,7 @@ const template = [
                         type: "info",
                         title: "T.Viewer",
                         message: "T.Viewer",
-                        detail: "Version: 1.1.0\nDate: 2020. 10. 14"
+                        detail: "Version: 1.2.0\nDate: 2021. 7. 12"
                     });
                 }
             }
