@@ -1,6 +1,6 @@
 # T.Viewer - Tizen Log Viewer
 
-[![Travis](https://travis-ci.org/msaltnet/T.Viewer.svg?branch=master&style=flat-square&colorB=green)](https://travis-ci.org/msaltnet/T.Viewer)
+[![Travis](https://travis-ci.com/msaltnet/T.Viewer.svg?branch=master&style=flat-square&colorB=green)](https://travis-ci.com/msaltnet/T.Viewer)
 [![license](https://img.shields.io/github/license/msaltnet/T.Viewer.svg?style=flat-square)](https://github.com/msaltnet/T.Viewer/blob/master/LICENSE)
 ![language](https://img.shields.io/github/languages/top/msaltnet/T.Viewer.svg?style=flat-square&colorB=green)
 [![codecov](https://codecov.io/gh/msaltnet/T.Viewer/branch/master/graph/badge.svg?token=A3GMQL823I)](https://codecov.io/gh/msaltnet/T.Viewer)

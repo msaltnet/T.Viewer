@@ -46,7 +46,7 @@ npm run build
 Linting을 위해서 eslint를 사용하고 있습니다. 명령어 창에서 `npm run lint` 명령어로 실행 가능합니다.
 
 ## Continuous Integration
-[travis-ci T.Viewer](https://travis-ci.org/github/msaltnet/T.Viewer)에서 CI가 작동하고 있습니다.
+[travis-ci T.Viewer](https://travis-ci.com/github/msaltnet/T.Viewer)에서 CI가 작동하고 있습니다.
 
 ![T.Viewr Travis CI](https://user-images.githubusercontent.com/9311990/89435221-8f1bbe80-d77f-11ea-8c51-d69aaff47bfd.PNG)
 
@@ -105,6 +105,6 @@ We use eslint for linting our sources. You can run eslint across the sources by 
 To lint the source as you make changes you can install the eslint extension.
 
 ## Continuous Integration
-[travis-ci T.Viewer](https://travis-ci.org/github/msaltnet/T.Viewer) is working with the repository.
+[travis-ci T.Viewer](https://travis-ci.com/github/msaltnet/T.Viewer) is working with the repository.
 
 ![T.Viewr Travis CI](https://user-images.githubusercontent.com/9311990/89435221-8f1bbe80-d77f-11ea-8c51-d69aaff47bfd.PNG)
